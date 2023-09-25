@@ -37,6 +37,7 @@ class LoginViewModel : ViewModel(){
                 printState()
             }
         }
+
         validateLoginUIDataWithRules()
     }
 
@@ -72,6 +73,4 @@ class LoginViewModel : ViewModel(){
         Log.d(TAG, "Inside_login_printState")
         Log.d(TAG, loginUIState.value.toString())
     }
-
-
-    }
+}

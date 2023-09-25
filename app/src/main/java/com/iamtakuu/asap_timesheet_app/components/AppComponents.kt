@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -66,7 +67,6 @@ import com.iamtakuu.asap_timesheet_app.ui.theme.Secondary
 import com.iamtakuu.asap_timesheet_app.ui.theme.TextColor
 import com.iamtakuu.asap_timesheet_app.ui.theme.componentShapes
 
-
 @Composable
 // Handy component to Default text.
 fun NormalTextComponent(value: String){
@@ -83,9 +83,9 @@ fun NormalTextComponent(value: String){
         ),
         color = TextColor,
         textAlign = TextAlign.Center
-
     )
 }
+
 @Composable
 // Handy component to Header text.
 fun HeadingTextComponent(value: String){
@@ -102,7 +102,6 @@ fun HeadingTextComponent(value: String){
         ),
         color = TextColor,
         textAlign = TextAlign.Center
-
     )
 }
 
@@ -162,9 +161,9 @@ fun ClickableTermsComponent(onTextSelected: (String) -> Unit) {
                     onTextSelected(span.item)
                 }
             }
-
     })
 }
+
 @Composable
 fun ClickableLoginComponent(tryingToLogin: Boolean = true, onTextSelected: (String) -> Unit) {
     val initialText = if (tryingToLogin) "Already have an account? " else "Don't have an account yet? "
@@ -198,7 +197,6 @@ fun ClickableLoginComponent(tryingToLogin: Boolean = true, onTextSelected: (Stri
                     onTextSelected(span.item)
                 }
             }
-
     })
 }
 
@@ -235,9 +233,41 @@ fun TextFieldComponent(
             Icon(painter = painterResource, contentDescription = "")
         }
     )
-
-
 }
+
+@Composable
+fun DescriptionFieldComponent(
+    labelValue: String,
+    painterResource: Painter,
+    onTextSelected: (String) -> Unit) {
+
+    val textValue = remember {
+        mutableStateOf("")
+    }
+    OutlinedTextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp)
+            .clip(componentShapes.small),
+        label = { Text(text = labelValue, Modifier.padding(0.dp, 0.dp)) },
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = BgColor,
+            unfocusedContainerColor = BgColor,
+            disabledContainerColor = BgColor,
+            cursorColor = Primary,
+            focusedBorderColor = Primary,
+            focusedLabelColor = Primary,
+        ),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        singleLine = false,
+        value = textValue.value,
+        onValueChange = {
+            textValue.value = it
+            onTextSelected(it)
+        }
+    )
+}
+
 @Composable
 fun UnderLinedTextComponent(value: String) {
     Text(
@@ -253,8 +283,8 @@ fun UnderLinedTextComponent(value: String) {
         textAlign = TextAlign.Center,
         textDecoration = TextDecoration.Underline
     )
-
 }
+
 @ExperimentalMaterial3Api
 @Composable
 fun PasswordFieldComponent(
@@ -315,24 +345,13 @@ fun PasswordFieldComponent(
             PasswordVisualTransformation()
         }
     )
-
-
 }
+
 @Composable
 fun ButtonComponent(value: String,
                     onButtonClicked: () -> Unit,
                     isEnabled: Boolean = false){
-    Button(
-        onClick = {
-            onButtonClicked.invoke()
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(48.dp),
-        contentPadding = PaddingValues(),
-        colors = ButtonDefaults.buttonColors(Color.Transparent)
-
-    ) {
+    IconButton(onClick = { /*TODO*/ }) {
         Box(modifier = Modifier
             .fillMaxWidth()
             .heightIn(48.dp)
@@ -347,6 +366,37 @@ fun ButtonComponent(value: String,
         }
     }
 }
+
+@Composable
+fun ButtonWithIconComponent(value: String,
+                    onButtonClicked: () -> Unit,
+                    isEnabled: Boolean = false){
+    Button(
+        onClick = {
+            onButtonClicked.invoke()
+        },
+        modifier = Modifier
+            .height(100.dp)
+            .width((100.dp)),
+        contentPadding = PaddingValues(),
+        colors = ButtonDefaults.buttonColors(Color.Transparent)
+
+    ) {
+        Box(modifier = Modifier
+            .height(100.dp)
+            .width((100.dp))
+            .background(
+                brush = Brush.horizontalGradient(listOf(Secondary, Primary)),
+                shape = RoundedCornerShape(50.dp)
+            ), contentAlignment = Alignment.Center
+        ){
+            Text(text = value,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold)
+        }
+    }
+}
+
 @Composable
 fun GoogleSignComponent(){
     Button(onClick = { /*TODO*/ },
@@ -381,6 +431,7 @@ fun GoogleSignComponent(){
         }
     }
 }
+
 @Composable
 fun MetaSignComponent(){
     Button(onClick = { /*TODO*/ },

@@ -23,12 +23,40 @@ object Validator {
         )
     }
 
-    fun validatePrivacyPolicyAcceptance(statusValue:Boolean):ValidationResult{
+    fun validatePrivacyPolicyAcceptance(statusValue: Boolean):ValidationResult{
         return ValidationResult(
             statusValue
         )
     }
 
+    // Will implement proper validation later
+    // v v v v v
+    fun validateStartDate(startDate: String):ValidationResult{
+        return ValidationResult(
+            (startDate.isNotEmpty() && startDate.length >= 2)
+        )
+    }
+
+    fun validateEndDate(endDate: String):ValidationResult{
+        return ValidationResult(
+            (endDate.isNotEmpty() && endDate.length >= 2)
+        )
+    }
+
+    fun validateTime(time: Int):ValidationResult{
+        return ValidationResult(
+            (time > 0)
+        )
+    }
+
+    fun validateCategory(category: String):ValidationResult{
+        return ValidationResult(
+            (category.isNotEmpty() && category.length >= 2)
+        )
+    }
+    // ^ ^ ^ ^ ^
+
+    // NB: "Image", "Tags", and "Description" should not be validated as they are optional
 }
 
 data class ValidationResult(
