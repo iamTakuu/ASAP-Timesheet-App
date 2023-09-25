@@ -203,7 +203,10 @@ fun ClickableLoginComponent(tryingToLogin: Boolean = true, onTextSelected: (Stri
 }
 
 @Composable
-fun TextFieldComponent(labelValue: String, painterResource: Painter) {
+fun TextFieldComponent(
+    labelValue: String,
+    painterResource: Painter,
+    onTextSelected: (String) -> Unit) {
 
     val textValue = remember {
         mutableStateOf("")
@@ -225,7 +228,9 @@ fun TextFieldComponent(labelValue: String, painterResource: Painter) {
         singleLine = true,
         maxLines = 1,
         value = textValue.value,
-        onValueChange = {textValue.value = it},
+        onValueChange = {
+            textValue.value = it
+            onTextSelected(it)},
         leadingIcon = {
             Icon(painter = painterResource, contentDescription = "")
         }
@@ -252,7 +257,10 @@ fun UnderLinedTextComponent(value: String) {
 }
 @ExperimentalMaterial3Api
 @Composable
-fun PasswordFieldComponent(labelValue: String, painterResource: Painter) {
+fun PasswordFieldComponent(
+    labelValue: String,
+    painterResource: Painter,
+    onTextSelected: (String) -> Unit) {
 
     val localFocusManager = LocalFocusManager.current
     val password = remember {
@@ -282,7 +290,9 @@ fun PasswordFieldComponent(labelValue: String, painterResource: Painter) {
         singleLine = true,
         maxLines = 1,
         value = password.value,
-        onValueChange = {password.value = it},
+        onValueChange = {
+            password.value = it
+            onTextSelected(it)},
         leadingIcon = {
             Icon(painter = painterResource, contentDescription = "")
         },
@@ -304,14 +314,18 @@ fun PasswordFieldComponent(labelValue: String, painterResource: Painter) {
         visualTransformation = if (passwordVisible.value) VisualTransformation.None else {
             PasswordVisualTransformation()
         }
-
     )
 
 
 }
 @Composable
-fun ButtonComponent(value: String){
-    Button(onClick = { /*TODO*/ },
+fun ButtonComponent(value: String,
+                    onButtonClicked: () -> Unit,
+                    isEnabled: Boolean = false){
+    Button(
+        onClick = {
+            onButtonClicked.invoke()
+        },
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(48.dp),
@@ -401,8 +415,6 @@ fun MetaSignComponent(){
         }
     }
 }
-
-
 
 @Composable
 fun DividerTextComponent(){

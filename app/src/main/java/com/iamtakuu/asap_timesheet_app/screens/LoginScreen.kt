@@ -18,6 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.iamtakuu.asap_timesheet_app.R
 import com.iamtakuu.asap_timesheet_app.components.ButtonComponent
 import com.iamtakuu.asap_timesheet_app.components.ClickableLoginComponent
@@ -29,12 +30,14 @@ import com.iamtakuu.asap_timesheet_app.components.NormalTextComponent
 import com.iamtakuu.asap_timesheet_app.components.PasswordFieldComponent
 import com.iamtakuu.asap_timesheet_app.components.TextFieldComponent
 import com.iamtakuu.asap_timesheet_app.components.UnderLinedTextComponent
+import com.iamtakuu.asap_timesheet_app.data.login.LoginUIEvent
+import com.iamtakuu.asap_timesheet_app.data.login.LoginViewModel
 import com.iamtakuu.asap_timesheet_app.navigation.ApplicationRouter
 import com.iamtakuu.asap_timesheet_app.navigation.Screen
 import com.iamtakuu.asap_timesheet_app.navigation.SystemBackButtonHandler
 
 @Composable
-fun LoginScreen(){
+fun LoginScreen(loginViewModel: LoginViewModel = viewModel()){
     Surface (
         modifier = Modifier
             .fillMaxSize()
@@ -48,11 +51,17 @@ fun LoginScreen(){
             Spacer(modifier = Modifier.height(20.dp))
             TextFieldComponent(
                 labelValue = stringResource(id = R.string.email),
-                painterResource(id = R.drawable.message)
+                painterResource(id = R.drawable.message),
+                onTextSelected = {
+                    loginViewModel.onEvent(LoginUIEvent.EmailChanged(it))
+                },
             )
             PasswordFieldComponent(
                 labelValue = stringResource(id = R.string.password),
-                painterResource(id = R.drawable.ic_lock)
+                painterResource(id = R.drawable.ic_lock),
+                onTextSelected = {
+                    loginViewModel.onEvent(LoginUIEvent.PasswordChanged(it))
+                },
             )
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -60,7 +69,12 @@ fun LoginScreen(){
 
             Spacer(modifier = Modifier.height(180.dp))
 
-            ButtonComponent(value = stringResource(id = R.string.login))
+            ButtonComponent(
+                value = stringResource(id = R.string.login),
+                onButtonClicked = {
+                    loginViewModel.onEvent(LoginUIEvent.LoginButtonClicked)
+                },
+                isEnabled = loginViewModel.allValidationsPassed.value)
 
             DividerTextComponent()
 
