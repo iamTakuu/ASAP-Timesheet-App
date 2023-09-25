@@ -1,4 +1,3 @@
 # ASAP-Timesheet-App
 
-Idk, it does stuff I guess.
-I think
+A timesheet app for our Open Source project.
