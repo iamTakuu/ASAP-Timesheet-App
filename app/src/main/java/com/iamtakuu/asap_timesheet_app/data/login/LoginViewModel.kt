@@ -15,7 +15,6 @@ class LoginViewModel : ViewModel(){
 
     var loginInProgress = mutableStateOf(false)
 
-
     fun onEvent(event: LoginUIEvent) {
         when (event) {
             is LoginUIEvent.EmailChanged -> {
@@ -58,8 +57,8 @@ class LoginViewModel : ViewModel(){
         Log.d(TAG, "Inside_validateDataWithRules")
         Log.d(TAG, "emailResult= $emailResult")
         Log.d(TAG, "passwordResult= $passwordResult")
-        allValidationsPassed.value = emailResult.status && passwordResult.status
 
+        allValidationsPassed.value = emailResult.status && passwordResult.status
     }
 
     private fun login() {

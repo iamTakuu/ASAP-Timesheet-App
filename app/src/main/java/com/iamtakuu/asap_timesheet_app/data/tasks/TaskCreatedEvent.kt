@@ -1,6 +1,7 @@
 package com.iamtakuu.asap_timesheet_app.data.tasks
 
 sealed class TaskCreatedEvent {
+    data class IconChanged(val icon:String): TaskCreatedEvent()
     data class StartDateChanged(val startDate:String): TaskCreatedEvent()
     data class EndDateChanged(val endDate:String): TaskCreatedEvent()
     data class TimeChanged(val time:Int): TaskCreatedEvent()

@@ -4,10 +4,13 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -28,6 +31,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -68,6 +72,9 @@ import com.iamtakuu.asap_timesheet_app.ui.theme.PurpleGrey40
 import com.iamtakuu.asap_timesheet_app.ui.theme.Secondary
 import com.iamtakuu.asap_timesheet_app.ui.theme.TextColor
 import com.iamtakuu.asap_timesheet_app.ui.theme.componentShapes
+import com.maxkeppeker.sheets.core.models.base.rememberSheetState
+import com.maxkeppeler.sheets.calendar.CalendarDialog
+import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 
 @Composable
 // Handy component to Default text.
@@ -181,9 +188,9 @@ fun ClickableLoginComponent(tryingToLogin: Boolean = true, onTextSelected: (Stri
 
     ClickableText(
         modifier = Modifier
-        .fillMaxWidth()
-        .heightIn(min = 40.dp)
-        .background(Color.White),
+            .fillMaxWidth()
+            .heightIn(min = 40.dp)
+            .background(Color.White),
         style = TextStyle(
             fontSize = 18.sp,
             fontWeight = FontWeight.Normal,
@@ -401,7 +408,6 @@ fun GoogleSignComponent(){
             .heightIn(48.dp),
         contentPadding = PaddingValues(),
         colors = ButtonDefaults.buttonColors(Color.Transparent)
-
     ) {
         Box(modifier = Modifier
             .fillMaxWidth()
@@ -485,5 +491,38 @@ fun DividerTextComponent(){
             color = PurpleGrey40,
             thickness = 1.dp
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DateTimePicker(
+    labelValue: String
+) {
+    val calendarState = rememberSheetState()
+
+    CalendarDialog(state = calendarState, selection = CalendarSelection.Date {
+        date -> Log.d("Selected Date: ", "$date")
+    })
+
+    Button(onClick = {calendarState.show()},
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(48.dp),
+        contentPadding = PaddingValues(),
+        colors = ButtonDefaults.buttonColors(Color.Transparent)
+    ) {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(48.dp)
+            .background(
+                brush = Brush.horizontalGradient(listOf(Secondary, Primary)),
+                shape = RoundedCornerShape(50.dp)
+            ), contentAlignment = Alignment.Center
+        ){
+            Text(text = labelValue,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold)
+        }
     }
 }

@@ -18,6 +18,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.iamtakuu.asap_timesheet_app.R
 import com.iamtakuu.asap_timesheet_app.components.ButtonComponent
 import com.iamtakuu.asap_timesheet_app.components.ButtonWithIconComponent
+import com.iamtakuu.asap_timesheet_app.components.DateTimePicker
 import com.iamtakuu.asap_timesheet_app.components.DescriptionFieldComponent
 import com.iamtakuu.asap_timesheet_app.components.HeadingTextComponent
 import com.iamtakuu.asap_timesheet_app.components.TextFieldComponent
@@ -52,22 +53,12 @@ fun TaskCreationScreen(taskCreationViewModel: TaskCreationViewModel = viewModel(
             Spacer(modifier = Modifier.height(10.dp))
 
             // Start Date
-            TextFieldComponent(
-                labelValue = stringResource(id = R.string.start_date),
-                painterResource(id = R.drawable.google),
-                onTextSelected = {
-                    taskCreationViewModel.onEvent(TaskCreatedEvent.StartDateChanged(it))
-                }
-            )
+            DateTimePicker(labelValue = stringResource(id = R.string.start_date))
+
+            Spacer(modifier = Modifier.height(10.dp))
 
             // End Date
-            TextFieldComponent(
-                labelValue = stringResource(id = R.string.end_date),
-                painterResource(id = R.drawable.google),
-                onTextSelected = {
-                    taskCreationViewModel.onEvent(TaskCreatedEvent.EndDateChanged(it))
-                }
-            )
+            DateTimePicker(labelValue = stringResource(id = R.string.end_date))
 
             // Time
             TextFieldComponent(
@@ -113,7 +104,8 @@ fun TaskCreationScreen(taskCreationViewModel: TaskCreationViewModel = viewModel(
                 onButtonClicked = {
                     taskCreationViewModel.onEvent(TaskCreatedEvent.TaskCreationButtonClicked)
                 },
-                isEnabled = taskCreationViewModel.allValidationsPassed.value)
+                isEnabled = taskCreationViewModel.allValidationsPassed.value
+            )
         }
     }
 }

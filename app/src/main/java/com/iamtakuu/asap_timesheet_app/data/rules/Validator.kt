@@ -56,7 +56,7 @@ object Validator {
     }
     // ^ ^ ^ ^ ^
 
-    // NB: "Image", "Tags", and "Description" should not be validated as they are optional
+    // NB: "Icon", "Tags", and "Description" will not be validated as they are optional
 }
 
 data class ValidationResult(

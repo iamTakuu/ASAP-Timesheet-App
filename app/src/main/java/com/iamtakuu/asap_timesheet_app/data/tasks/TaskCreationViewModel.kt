@@ -12,8 +12,17 @@ class TaskCreationViewModel : ViewModel() {
 
     var allValidationsPassed = mutableStateOf(false)
 
+    var creationProcess = mutableStateOf(false)
+
     fun onEvent(event: TaskCreatedEvent) {
         when (event) {
+            is TaskCreatedEvent.IconChanged -> {
+                taskCreationState.value = taskCreationState.value.copy(
+                    icon = event.icon
+                )
+                printState()
+            }
+
             is TaskCreatedEvent.StartDateChanged -> {
                 taskCreationState.value = taskCreationState.value.copy(
                     startDate = event.startDate
@@ -83,15 +92,34 @@ class TaskCreationViewModel : ViewModel() {
             category = taskCreationState.value.category
         )
 
-        /*taskCreationState.value = taskCreationState.value.copy(
-            emailError = emailResult.status,
-            passwordError = passwordResult.status
+        taskCreationState.value = taskCreationState.value.copy(
+            startDateError = startDateResult.status,
+            endDateError = endDateResult.status,
+            timeError = timeResult.status,
+            categoryError = categoryResult.status,
         )
-        Log.d(TAG, "Inside_validateDataWithRules")
-        Log.d(TAG, "emailResult= $emailResult")
-        Log.d(TAG, "passwordResult= $passwordResult")
-        allValidationsPassed.value = emailResult.status && passwordResult.status*/
+        Log.d(TAG, "Inside_validateTaskCreationDataWithRules")
+        Log.d(TAG, "startDateResult= $startDateResult")
+        Log.d(TAG, "endDateResult= $endDateResult")
+        Log.d(TAG, "timeResult= $timeResult")
+        Log.d(TAG, "categoryResult= $categoryResult")
 
+        allValidationsPassed.value =
+                startDateResult.status
+                && endDateResult.status
+                && timeResult.status
+                && categoryResult.status
+    }
+
+    private fun createTask() {
+        creationProcess.value = true
+        val icon = taskCreationState.value.icon
+        val startDate = taskCreationState.value.startDate
+        val endDate = taskCreationState.value.endDate
+        val time = taskCreationState.value.time
+        val category = taskCreationState.value.category
+        val tags = taskCreationState.value.tags
+        val description = taskCreationState.value.description
     }
 
     private fun printState(){
