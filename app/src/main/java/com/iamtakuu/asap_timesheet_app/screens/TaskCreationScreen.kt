@@ -17,11 +17,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.iamtakuu.asap_timesheet_app.R
 import com.iamtakuu.asap_timesheet_app.components.ButtonComponent
+import com.iamtakuu.asap_timesheet_app.components.ButtonWithIconComponent
 import com.iamtakuu.asap_timesheet_app.components.DescriptionFieldComponent
 import com.iamtakuu.asap_timesheet_app.components.HeadingTextComponent
 import com.iamtakuu.asap_timesheet_app.components.TextFieldComponent
-import com.iamtakuu.asap_timesheet_app.data.login.TaskCreatedEvent
-import com.iamtakuu.asap_timesheet_app.data.login.TaskCreationViewModel
+import com.iamtakuu.asap_timesheet_app.data.tasks.TaskCreatedEvent
+import com.iamtakuu.asap_timesheet_app.data.tasks.TaskCreationViewModel
 
 @Composable
 fun TaskCreationScreen(taskCreationViewModel: TaskCreationViewModel = viewModel()){
@@ -36,11 +37,19 @@ fun TaskCreationScreen(taskCreationViewModel: TaskCreationViewModel = viewModel(
             // Heading
             HeadingTextComponent(value = stringResource(id = R.string.task_details))
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
+            // Optional Image
+            ButtonWithIconComponent(
+                value = stringResource(id = R.string.add_image),
+                onButtonClicked = {
+                    // DO REFERENCE FOR ADDING A PHOTO HERE
+                    //taskCreationViewModel.onEvent(TaskCreatedEvent.TaskCreationButtonClicked)
+                },
+                isEnabled = taskCreationViewModel.allValidationsPassed.value
+            )
 
-
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             // Start Date
             TextFieldComponent(

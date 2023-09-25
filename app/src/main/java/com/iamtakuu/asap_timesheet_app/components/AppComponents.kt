@@ -3,6 +3,7 @@ package com.iamtakuu.asap_timesheet_app.components
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -247,7 +249,7 @@ fun DescriptionFieldComponent(
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
-            .height(300.dp)
+            .heightIn(100.dp, 200.dp)
             .clip(componentShapes.small),
         label = { Text(text = labelValue, Modifier.padding(0.dp, 0.dp)) },
         colors = OutlinedTextFieldDefaults.colors(
@@ -351,7 +353,16 @@ fun PasswordFieldComponent(
 fun ButtonComponent(value: String,
                     onButtonClicked: () -> Unit,
                     isEnabled: Boolean = false){
-    IconButton(onClick = { /*TODO*/ }) {
+    Button(
+        onClick = {
+            onButtonClicked.invoke()
+        },
+        modifier = Modifier
+            .fillMaxWidth(),
+        contentPadding = PaddingValues(),
+        colors = ButtonDefaults.buttonColors(Color.Transparent)
+
+    ) {
         Box(modifier = Modifier
             .fillMaxWidth()
             .heightIn(48.dp)
@@ -371,29 +382,14 @@ fun ButtonComponent(value: String,
 fun ButtonWithIconComponent(value: String,
                     onButtonClicked: () -> Unit,
                     isEnabled: Boolean = false){
-    Button(
-        onClick = {
-            onButtonClicked.invoke()
-        },
-        modifier = Modifier
-            .height(100.dp)
-            .width((100.dp)),
-        contentPadding = PaddingValues(),
-        colors = ButtonDefaults.buttonColors(Color.Transparent)
-
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .size(100.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Box(modifier = Modifier
-            .height(100.dp)
-            .width((100.dp))
-            .background(
-                brush = Brush.horizontalGradient(listOf(Secondary, Primary)),
-                shape = RoundedCornerShape(50.dp)
-            ), contentAlignment = Alignment.Center
-        ){
-            Text(text = value,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold)
-        }
+        Image(painter = painterResource(id = R.drawable.ic_launcher_background),
+            contentDescription = null,
+            modifier = Modifier.clickable { onButtonClicked.invoke() })
     }
 }
 
