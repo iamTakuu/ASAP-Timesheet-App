@@ -4,19 +4,15 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
@@ -31,7 +27,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -288,7 +283,8 @@ fun UnderLinedTextComponent(value: String) {
             fontSize = 16.sp,
             fontWeight = FontWeight.Normal,
             fontStyle = FontStyle.Normal
-        ), color = PurpleGrey40,
+        ),
+        color = PurpleGrey40,
         textAlign = TextAlign.Center,
         textDecoration = TextDecoration.Underline
     )
@@ -376,7 +372,8 @@ fun ButtonComponent(value: String,
             .background(
                 brush = Brush.horizontalGradient(listOf(Secondary, Primary)),
                 shape = RoundedCornerShape(50.dp)
-            ), contentAlignment = Alignment.Center
+            )
+            , contentAlignment = Alignment.Center
         ){
             Text(text = value,
                 fontSize = 18.sp,
@@ -389,14 +386,29 @@ fun ButtonComponent(value: String,
 fun ButtonWithIconComponent(value: String,
                     onButtonClicked: () -> Unit,
                     isEnabled: Boolean = false){
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .size(100.dp),
+    Box(
+        modifier = Modifier
+            .fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
-        Image(painter = painterResource(id = R.drawable.ic_launcher_background),
-            contentDescription = null,
-            modifier = Modifier.clickable { onButtonClicked.invoke() })
+        Box(
+            modifier = Modifier
+                .widthIn(80.dp)
+                .heightIn(80.dp)
+                .background(
+                    brush = Brush.horizontalGradient(listOf(Secondary, Primary)),
+                    shape = RoundedCornerShape(24.dp)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(painter = painterResource(id = R.drawable.profile),
+                contentDescription = null,
+                modifier = Modifier
+                    .widthIn(60.dp)
+                    .heightIn(60.dp)
+                    .clickable { onButtonClicked.invoke() }
+            )
+        }
     }
 }
 
@@ -415,7 +427,8 @@ fun GoogleSignComponent(){
             .background(
                 brush = Brush.horizontalGradient(listOf(GoogleBlue, GoogleRed)),
                 shape = RoundedCornerShape(25.dp)
-            ), contentAlignment = Alignment.Center
+            ),
+            contentAlignment = Alignment.Center
         ){
             Row (modifier = Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically){
                 Image(
@@ -450,7 +463,8 @@ fun MetaSignComponent(){
             .background(
                 brush = Brush.horizontalGradient(listOf(MetaDarkBlue, MetaBlue)),
                 shape = RoundedCornerShape(25.dp)
-            ), contentAlignment = Alignment.Center
+            ),
+            contentAlignment = Alignment.Center
         ){
             Row (modifier = Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically){
                 Image(
@@ -458,7 +472,9 @@ fun MetaSignComponent(){
                     painter = painterResource(id = R.drawable.meta),
                     contentDescription = "Meta Sign In"
                 )
-                Spacer(modifier = Modifier.width(5.dp)) // Add 16dp of space
+
+                Spacer(modifier = Modifier.width(5.dp))
+
                 Text(
                     text = "Meta",
                     fontSize = 18.sp,
@@ -496,7 +512,7 @@ fun DividerTextComponent(){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DateTimePicker(
+fun DateTimePickerComponent(
     labelValue: String
 ) {
     val calendarState = rememberSheetState()
@@ -509,7 +525,7 @@ fun DateTimePicker(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(48.dp),
-        contentPadding = PaddingValues(),
+        contentPadding = PaddingValues(0.dp, 0.dp),
         colors = ButtonDefaults.buttonColors(Color.Transparent)
     ) {
         Box(modifier = Modifier
@@ -518,11 +534,14 @@ fun DateTimePicker(
             .background(
                 brush = Brush.horizontalGradient(listOf(Secondary, Primary)),
                 shape = RoundedCornerShape(50.dp)
-            ), contentAlignment = Alignment.Center
+            ),
+            contentAlignment = Alignment.CenterStart
         ){
             Text(text = labelValue,
                 fontSize = 18.sp,
-                fontWeight = FontWeight.Bold)
+                modifier = Modifier
+                    .padding(50.dp, 0.dp)
+            )
         }
     }
 }

@@ -18,7 +18,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.iamtakuu.asap_timesheet_app.R
 import com.iamtakuu.asap_timesheet_app.components.ButtonComponent
 import com.iamtakuu.asap_timesheet_app.components.ButtonWithIconComponent
-import com.iamtakuu.asap_timesheet_app.components.DateTimePicker
+import com.iamtakuu.asap_timesheet_app.components.DateTimePickerComponent
 import com.iamtakuu.asap_timesheet_app.components.DescriptionFieldComponent
 import com.iamtakuu.asap_timesheet_app.components.HeadingTextComponent
 import com.iamtakuu.asap_timesheet_app.components.TextFieldComponent
@@ -45,7 +45,7 @@ fun TaskCreationScreen(taskCreationViewModel: TaskCreationViewModel = viewModel(
                 value = stringResource(id = R.string.add_image),
                 onButtonClicked = {
                     // DO REFERENCE FOR ADDING A PHOTO HERE
-                    //taskCreationViewModel.onEvent(TaskCreatedEvent.TaskCreationButtonClicked)
+                    //taskCreationViewModel.onEvent(TaskCreatedEvent.<ONCLICKMETHOD>)
                 },
                 isEnabled = taskCreationViewModel.allValidationsPassed.value
             )
@@ -53,12 +53,12 @@ fun TaskCreationScreen(taskCreationViewModel: TaskCreationViewModel = viewModel(
             Spacer(modifier = Modifier.height(10.dp))
 
             // Start Date
-            DateTimePicker(labelValue = stringResource(id = R.string.start_date))
+            DateTimePickerComponent(labelValue = stringResource(id = R.string.start_date))
 
             Spacer(modifier = Modifier.height(10.dp))
 
             // End Date
-            DateTimePicker(labelValue = stringResource(id = R.string.end_date))
+            DateTimePickerComponent(labelValue = stringResource(id = R.string.end_date))
 
             // Time
             TextFieldComponent(
