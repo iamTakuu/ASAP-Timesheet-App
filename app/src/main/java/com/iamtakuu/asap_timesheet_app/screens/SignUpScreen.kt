@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -55,28 +57,32 @@ fun SignUpScreen(signupViewModel: SignUpViewModel = viewModel()) {
                     painterResource(id = R.drawable.profile),
                     onTextSelected = {
                         signupViewModel.onEvent(SignUpUIEvent.FirstNameChanged(it))
-                    }
+                    },
+                    errorStatus = signupViewModel.signUpUIState.value.firstNameError
                 )
                 TextFieldComponent(
                     labelValue = stringResource(id = R.string.last_name),
                     painterResource(id = R.drawable.profile),
                     onTextSelected = {
                         signupViewModel.onEvent(SignUpUIEvent.LastNameChanged(it))
-                    }
+                    },
+                    errorStatus = signupViewModel.signUpUIState.value.lastNameError
                 )
                 TextFieldComponent(
                     labelValue = stringResource(id = R.string.email),
                     painterResource(id = R.drawable.message),
                     onTextSelected = {
                         signupViewModel.onEvent(SignUpUIEvent.EmailChanged(it))
-                    }
+                    },
+                    errorStatus = signupViewModel.signUpUIState.value.emailError
                 )
                 PasswordFieldComponent(
                     labelValue = stringResource(id = R.string.password),
                     painterResource(id = R.drawable.ic_lock),
                     onTextSelected = {
                         signupViewModel.onEvent(SignUpUIEvent.PasswordChanged(it))
-                    }
+                    },
+                    errorStatus = signupViewModel.signUpUIState.value.passwordError
                 )
                 CheckboxComponent(
                     onTextSelected = {
@@ -112,6 +118,12 @@ fun SignUpScreen(signupViewModel: SignUpViewModel = viewModel()) {
                 ClickableLoginComponent(tryingToLogin = true, onTextSelected = {
                     ApplicationRouter.navigateTo(Screen.LoginScreen)
                 })
+
+                if(signupViewModel.signUpInProgress.value) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                }
             }
         }
 }

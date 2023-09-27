@@ -10,10 +10,6 @@ import com.iamtakuu.asap_timesheet_app.navigation.ApplicationRouter
 import com.iamtakuu.asap_timesheet_app.navigation.Screen
 import com.iamtakuu.asap_timesheet_app.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.jan.supabase.SupabaseClient
-import io.github.jan.supabase.createSupabaseClient
-import io.github.jan.supabase.postgrest.Postgrest
-import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -30,6 +26,7 @@ class SignUpViewModel @Inject constructor(
     private val TAG = SignUpViewModel::class.simpleName
 
     var signUpUIState = mutableStateOf(SignUpUIState())
+    var signUpInProgress = mutableStateOf(false)
     var allValidationsPassed = mutableStateOf(false)
 
     private val _uiState = MutableStateFlow<SupaResult<*>>(SupaResult.Loading)
@@ -68,19 +65,16 @@ class SignUpViewModel @Inject constructor(
                 printState()
 
             }
-
-            is SignUpUIEvent.RegisterButtonClicked -> {
-                //getClient()
-                //getData()
-                if (allValidationsPassed.value){
-                    registerUser()
-                }
-            }
-
             is SignUpUIEvent.PrivacyPolicyCheckBoxClicked -> {
                 signUpUIState.value = signUpUIState.value.copy(
                     privacyPolicyAccepted = event.status
                 )
+            }
+            is SignUpUIEvent.RegisterButtonClicked -> {
+                if (allValidationsPassed.value){
+                    registerUser()
+                    observeState()
+                }
             }
         }
         validateDataWithRules()
@@ -123,7 +117,6 @@ class SignUpViewModel @Inject constructor(
             privacyPolicyError = privacyPolicyResult.status
         )
 
-
         allValidationsPassed.value = fNameResult.status && lNameResult.status &&
                 emailResult.status && passwordResult.status && privacyPolicyResult.status
 
@@ -141,17 +134,7 @@ class SignUpViewModel @Inject constructor(
         val last_name: String = "",
     )
 
-    private fun insertData(){
-        viewModelScope.launch {
-            val client = getClient()
-            val user = User(
-                email = signUpUIState.value.email,
-                password = signUpUIState.value.password)
 
-            client.postgrest["users"].insert(user)
-
-        }
-    }
 
     private fun registerUser(){
         viewModelScope.launch {
@@ -164,36 +147,28 @@ class SignUpViewModel @Inject constructor(
             repository.registerUser(user).collectLatest { data ->
                 _uiState.update { data }
             }
-        }.invokeOnCompletion {
-            ApplicationRouter.navigateTo(Screen.TermsAndConditionsScreen)
         }
     }
-
-    private fun getData(){
-        Log.e("supabase!", "GOOOO")
-
-        viewModelScope.launch {
-            val client = getClient()
-            val response = client.postgrest["users"].select()
-
-            val data = response.decodeList<User>()
-
-            Log.e("supabase", data.toString())
+private fun observeState(){
+    viewModelScope.launch {
+        uiState.collectLatest { data ->
+            when(data){
+                is SupaResult.Error -> {
+                    Log.e("SignUpVM", "Message ${data.message}")
+                }
+                is SupaResult.Loading -> {
+                    signUpInProgress.value = true
+                    Log.e("SignUpVM", "Loading...")
+                }
+                is SupaResult.Success -> {
+                    Log.e("SignUpVM", "Epic ${data.data}")
+                    ApplicationRouter.navigateTo(Screen.TaskCreationScreen)
+                }
+            }
         }
-    }
-    private fun getClient() : SupabaseClient {
-        //Log.d(TAG, "Inside_signUp")
-        //printState()
-        //TODO: Add SupaBase sign up functionality
 
-        val client = createSupabaseClient(
-            supabaseUrl = "https://eombpjefbvbngrpcccnw.supabase.co",
-            supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvbWJwamVmYnZibmdycGNjY253Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTU3Mjk5MzAsImV4cCI6MjAxMTMwNTkzMH0.f3mneinL6u-nfZA4IuaeI1cs0MgwHrWPKkHqtde6pok"
-        ){
-            this.install(Postgrest)
-        }
-        return client
     }
+}
     private fun printState() {
         Log.d(TAG, "Inside_printState")
         Log.d(TAG, signUpUIState.value.toString())
