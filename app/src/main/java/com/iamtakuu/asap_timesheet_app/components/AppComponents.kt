@@ -3,6 +3,7 @@ package com.iamtakuu.asap_timesheet_app.components
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
@@ -65,7 +67,9 @@ import com.iamtakuu.asap_timesheet_app.ui.theme.PurpleGrey40
 import com.iamtakuu.asap_timesheet_app.ui.theme.Secondary
 import com.iamtakuu.asap_timesheet_app.ui.theme.TextColor
 import com.iamtakuu.asap_timesheet_app.ui.theme.componentShapes
-
+import com.maxkeppeker.sheets.core.models.base.rememberSheetState
+import com.maxkeppeler.sheets.calendar.CalendarDialog
+import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 
 @Composable
 // Handy component to Default text.
@@ -83,9 +87,9 @@ fun NormalTextComponent(value: String){
         ),
         color = TextColor,
         textAlign = TextAlign.Center
-
     )
 }
+
 @Composable
 // Handy component to Header text.
 fun HeadingTextComponent(value: String){
@@ -102,7 +106,6 @@ fun HeadingTextComponent(value: String){
         ),
         color = TextColor,
         textAlign = TextAlign.Center
-
     )
 }
 
@@ -162,9 +165,9 @@ fun ClickableTermsComponent(onTextSelected: (String) -> Unit) {
                     onTextSelected(span.item)
                 }
             }
-
     })
 }
+
 @Composable
 fun ClickableLoginComponent(tryingToLogin: Boolean = true, onTextSelected: (String) -> Unit) {
     val initialText = if (tryingToLogin) "Already have an account? " else "Don't have an account yet? "
@@ -180,9 +183,9 @@ fun ClickableLoginComponent(tryingToLogin: Boolean = true, onTextSelected: (Stri
 
     ClickableText(
         modifier = Modifier
-        .fillMaxWidth()
-        .heightIn(min = 40.dp)
-        .background(Color.White),
+            .fillMaxWidth()
+            .heightIn(min = 40.dp)
+            .background(Color.White),
         style = TextStyle(
             fontSize = 18.sp,
             fontWeight = FontWeight.Normal,
@@ -198,7 +201,6 @@ fun ClickableLoginComponent(tryingToLogin: Boolean = true, onTextSelected: (Stri
                     onTextSelected(span.item)
                 }
             }
-
     })
 }
 
@@ -235,9 +237,41 @@ fun TextFieldComponent(
             Icon(painter = painterResource, contentDescription = "")
         }
     )
-
-
 }
+
+@Composable
+fun DescriptionFieldComponent(
+    labelValue: String,
+    painterResource: Painter,
+    onTextSelected: (String) -> Unit) {
+
+    val textValue = remember {
+        mutableStateOf("")
+    }
+    OutlinedTextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(100.dp, 200.dp)
+            .clip(componentShapes.small),
+        label = { Text(text = labelValue, Modifier.padding(0.dp, 0.dp)) },
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = BgColor,
+            unfocusedContainerColor = BgColor,
+            disabledContainerColor = BgColor,
+            cursorColor = Primary,
+            focusedBorderColor = Primary,
+            focusedLabelColor = Primary,
+        ),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        singleLine = false,
+        value = textValue.value,
+        onValueChange = {
+            textValue.value = it
+            onTextSelected(it)
+        }
+    )
+}
+
 @Composable
 fun UnderLinedTextComponent(value: String) {
     Text(
@@ -249,12 +283,13 @@ fun UnderLinedTextComponent(value: String) {
             fontSize = 16.sp,
             fontWeight = FontWeight.Normal,
             fontStyle = FontStyle.Normal
-        ), color = PurpleGrey40,
+        ),
+        color = PurpleGrey40,
         textAlign = TextAlign.Center,
         textDecoration = TextDecoration.Underline
     )
-
 }
+
 @ExperimentalMaterial3Api
 @Composable
 fun PasswordFieldComponent(
@@ -315,9 +350,8 @@ fun PasswordFieldComponent(
             PasswordVisualTransformation()
         }
     )
-
-
 }
+
 @Composable
 fun ButtonComponent(value: String,
                     onButtonClicked: () -> Unit,
@@ -327,8 +361,7 @@ fun ButtonComponent(value: String,
             onButtonClicked.invoke()
         },
         modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(48.dp),
+            .fillMaxWidth(),
         contentPadding = PaddingValues(),
         colors = ButtonDefaults.buttonColors(Color.Transparent)
 
@@ -339,7 +372,8 @@ fun ButtonComponent(value: String,
             .background(
                 brush = Brush.horizontalGradient(listOf(Secondary, Primary)),
                 shape = RoundedCornerShape(50.dp)
-            ), contentAlignment = Alignment.Center
+            )
+            , contentAlignment = Alignment.Center
         ){
             Text(text = value,
                 fontSize = 18.sp,
@@ -347,6 +381,37 @@ fun ButtonComponent(value: String,
         }
     }
 }
+
+@Composable
+fun ButtonWithIconComponent(value: String,
+                    onButtonClicked: () -> Unit,
+                    isEnabled: Boolean = false){
+    Box(
+        modifier = Modifier
+            .fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .widthIn(80.dp)
+                .heightIn(80.dp)
+                .background(
+                    brush = Brush.horizontalGradient(listOf(Secondary, Primary)),
+                    shape = RoundedCornerShape(24.dp)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(painter = painterResource(id = R.drawable.profile),
+                contentDescription = null,
+                modifier = Modifier
+                    .widthIn(60.dp)
+                    .heightIn(60.dp)
+                    .clickable { onButtonClicked.invoke() }
+            )
+        }
+    }
+}
+
 @Composable
 fun GoogleSignComponent(){
     Button(onClick = { /*TODO*/ },
@@ -355,7 +420,6 @@ fun GoogleSignComponent(){
             .heightIn(48.dp),
         contentPadding = PaddingValues(),
         colors = ButtonDefaults.buttonColors(Color.Transparent)
-
     ) {
         Box(modifier = Modifier
             .fillMaxWidth()
@@ -363,7 +427,8 @@ fun GoogleSignComponent(){
             .background(
                 brush = Brush.horizontalGradient(listOf(GoogleBlue, GoogleRed)),
                 shape = RoundedCornerShape(25.dp)
-            ), contentAlignment = Alignment.Center
+            ),
+            contentAlignment = Alignment.Center
         ){
             Row (modifier = Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically){
                 Image(
@@ -381,6 +446,7 @@ fun GoogleSignComponent(){
         }
     }
 }
+
 @Composable
 fun MetaSignComponent(){
     Button(onClick = { /*TODO*/ },
@@ -397,7 +463,8 @@ fun MetaSignComponent(){
             .background(
                 brush = Brush.horizontalGradient(listOf(MetaDarkBlue, MetaBlue)),
                 shape = RoundedCornerShape(25.dp)
-            ), contentAlignment = Alignment.Center
+            ),
+            contentAlignment = Alignment.Center
         ){
             Row (modifier = Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically){
                 Image(
@@ -405,7 +472,9 @@ fun MetaSignComponent(){
                     painter = painterResource(id = R.drawable.meta),
                     contentDescription = "Meta Sign In"
                 )
-                Spacer(modifier = Modifier.width(5.dp)) // Add 16dp of space
+
+                Spacer(modifier = Modifier.width(5.dp))
+
                 Text(
                     text = "Meta",
                     fontSize = 18.sp,
@@ -438,5 +507,41 @@ fun DividerTextComponent(){
             color = PurpleGrey40,
             thickness = 1.dp
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DateTimePickerComponent(
+    labelValue: String
+) {
+    val calendarState = rememberSheetState()
+
+    CalendarDialog(state = calendarState, selection = CalendarSelection.Date {
+        date -> Log.d("Selected Date: ", "$date")
+    })
+
+    Button(onClick = {calendarState.show()},
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(48.dp),
+        contentPadding = PaddingValues(0.dp, 0.dp),
+        colors = ButtonDefaults.buttonColors(Color.Transparent)
+    ) {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(48.dp)
+            .background(
+                brush = Brush.horizontalGradient(listOf(Secondary, Primary)),
+                shape = RoundedCornerShape(50.dp)
+            ),
+            contentAlignment = Alignment.CenterStart
+        ){
+            Text(text = labelValue,
+                fontSize = 18.sp,
+                modifier = Modifier
+                    .padding(50.dp, 0.dp)
+            )
+        }
     }
 }
