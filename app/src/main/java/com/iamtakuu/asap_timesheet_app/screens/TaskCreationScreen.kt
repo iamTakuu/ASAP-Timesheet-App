@@ -20,6 +20,7 @@ import com.iamtakuu.asap_timesheet_app.components.ButtonComponent
 import com.iamtakuu.asap_timesheet_app.components.ButtonWithIconComponent
 import com.iamtakuu.asap_timesheet_app.components.DateTimePickerComponent
 import com.iamtakuu.asap_timesheet_app.components.DescriptionFieldComponent
+import com.iamtakuu.asap_timesheet_app.components.DropDownMenuComponent
 import com.iamtakuu.asap_timesheet_app.components.HeadingTextComponent
 import com.iamtakuu.asap_timesheet_app.components.TextFieldComponent
 import com.iamtakuu.asap_timesheet_app.data.tasks.TaskCreatedEvent
@@ -69,6 +70,35 @@ fun TaskCreationScreen(taskCreationViewModel: TaskCreationViewModel = viewModel(
                 }
             )
 
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Category
+            DropDownMenuComponent(
+                labelValue = stringResource(id = R.string.category),
+                options = listOf(
+                    "Option 1",
+                    "Option 2",
+                    "Option 3"
+                )
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Tags
+            DropDownMenuComponent(
+                labelValue = stringResource(id = R.string.tags),
+                options = listOf(
+                    "Tag 1",
+                    "Tag 2",
+                    "Tag 3",
+                    "Tag 4"
+                )
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            /*
             // Category
             TextFieldComponent(
                 labelValue = stringResource(id = R.string.category),
@@ -86,6 +116,7 @@ fun TaskCreationScreen(taskCreationViewModel: TaskCreationViewModel = viewModel(
                     taskCreationViewModel.onEvent(TaskCreatedEvent.TagsChanged(it))
                 }
             )
+            */
 
             // Description
             DescriptionFieldComponent(

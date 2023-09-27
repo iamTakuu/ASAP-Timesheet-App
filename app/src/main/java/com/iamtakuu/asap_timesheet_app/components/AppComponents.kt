@@ -4,15 +4,19 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
@@ -22,8 +26,11 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,14 +38,20 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -54,6 +67,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.iamtakuu.asap_timesheet_app.R
@@ -213,6 +227,7 @@ fun TextFieldComponent(
     val textValue = remember {
         mutableStateOf("")
     }
+
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
@@ -542,6 +557,88 @@ fun DateTimePickerComponent(
                 modifier = Modifier
                     .padding(50.dp, 0.dp)
             )
+        }
+    }
+}
+
+@Composable
+fun DropDownMenuComponent(
+    labelValue: String,
+    options: List<String> = listOf()
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        items(
+            listOf(
+                labelValue
+            )
+        ) { item ->
+            DropDownFormatter(
+                itemName = item,
+                dropDownItems = options,
+                onItemClick = { Log.d("Drop Down: ", item) }
+            )
+        }
+    }
+}
+
+@Composable
+fun DropDownFormatter(
+    modifier: Modifier = Modifier,
+    itemName: String,
+    dropDownItems: List<String> = listOf(),
+    onItemClick: (String) -> Unit,
+) {
+    var dropDownContextState by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    var touchOffset by remember {
+        mutableStateOf(DpOffset.Zero)
+    }
+
+    var itemHeight by remember {
+        mutableStateOf(0.dp)
+    }
+
+    var density = LocalDensity.current
+
+    Card(
+        modifier = Modifier
+            .onSizeChanged {
+                itemHeight = with(density) { it.height.toDp() }
+            }
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .pointerInput(true) {
+                    detectTapGestures(
+                        onLongPress = {
+                            dropDownContextState = true
+                            touchOffset = DpOffset(it.x.toDp(), it.y.toDp())
+                        }
+                    )
+                }
+                .padding(16.dp)
+        ) {
+            Text(text = itemName)
+        }
+
+        DropdownMenu(
+            expanded = dropDownContextState,
+            onDismissRequest = { dropDownContextState = false }
+        ) {
+            dropDownItems.forEach{
+                    item -> DropdownMenuItem(
+                        text = { item },
+                        onClick = {
+                        onItemClick(item)
+                        dropDownContextState = false
+                })
+            }
         }
     }
 }
