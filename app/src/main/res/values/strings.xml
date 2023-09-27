@@ -26,4 +26,6 @@
     <string name="tags">Tags</string>
     <string name="description">Add a description here</string>
     <string name="create_task">Create Task</string>
+
+    <string name="statistics">Statistics</string>
 </resources>
