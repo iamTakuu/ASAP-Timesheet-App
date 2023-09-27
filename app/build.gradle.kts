@@ -86,6 +86,10 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.44")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
 
+    implementation ("com.maxkeppeler.sheets-compose-dialogs:core:1.0.2")
+    implementation ("com.maxkeppeler.sheets-compose-dialogs:calendar:1.0.2")
+
+
 }// Allow references to generated code
 kapt {
     correctErrorTypes = true
