@@ -1,6 +1,9 @@
-package com.iamtakuu.asap_timesheet_app.data
+package com.iamtakuu.asap_timesheet_app.data.signup
 
-data class RegistrationUIState(
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class SignUpUIState(
     var firstName :String = "",
     var lastName  :String = "",
     var email  :String = "",
