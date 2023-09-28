@@ -57,7 +57,6 @@ class SignUpViewModel @Inject constructor(
 
             }
 
-
             is SignUpUIEvent.PasswordChanged -> {
                 signUpUIState.value = signUpUIState.value.copy(
                     password = event.password
@@ -70,15 +69,18 @@ class SignUpViewModel @Inject constructor(
                     privacyPolicyAccepted = event.status
                 )
             }
+
             is SignUpUIEvent.RegisterButtonClicked -> {
-                if (allValidationsPassed.value){
+                if (allValidationsPassed.value) {
                     registerUser()
                     observeState()
                 }
             }
         }
+
         validateDataWithRules()
     }
+
     private fun validateDataWithRules() {
         val fNameResult = Validator.validateFirstName(
             fName = signUpUIState.value.firstName
@@ -101,7 +103,6 @@ class SignUpViewModel @Inject constructor(
             statusValue = signUpUIState.value.privacyPolicyAccepted
         )
 
-
         Log.d(TAG, "Inside_validateDataWithRules")
         Log.d(TAG, "fNameResult= $fNameResult")
         Log.d(TAG, "lNameResult= $lNameResult")
@@ -121,26 +122,25 @@ class SignUpViewModel @Inject constructor(
                 emailResult.status && passwordResult.status && privacyPolicyResult.status
 
     }
-//Temporary data class
+
+    //Temporary data class
     @Serializable
     data class User(
         //val id: Int = 0,
         val email: String = "",
         val password: String = ""
     )
+
     @Serializable
     data class UserData(
         val first_name: String = "",
         val last_name: String = "",
     )
 
-
-
-    private fun registerUser(){
+    private fun registerUser() {
         viewModelScope.launch {
             Log.e("", uiState.toString())
             val user = User(
-
                 email = signUpUIState.value.email,
                 password = signUpUIState.value.password
             )
@@ -149,26 +149,27 @@ class SignUpViewModel @Inject constructor(
             }
         }
     }
-private fun observeState(){
-    viewModelScope.launch {
-        uiState.collectLatest { data ->
-            when(data){
-                is SupaResult.Error -> {
-                    Log.e("SignUpVM", "Message ${data.message}")
-                }
-                is SupaResult.Loading -> {
-                    signUpInProgress.value = true
-                    Log.e("SignUpVM", "Loading...")
-                }
-                is SupaResult.Success -> {
-                    Log.e("SignUpVM", "Epic ${data.data}")
-                    ApplicationRouter.navigateTo(Screen.TaskCreationScreen)
+
+    private fun observeState() {
+        viewModelScope.launch {
+            uiState.collectLatest { data ->
+                when(data) {
+                    is SupaResult.Error -> {
+                        Log.e("SignUpVM", "Message ${data.message}")
+                    }
+                    is SupaResult.Loading -> {
+                        signUpInProgress.value = true
+                        Log.e("SignUpVM", "Loading...")
+                    }
+                    is SupaResult.Success -> {
+                        Log.e("SignUpVM", "Epic ${data.data}")
+                        ApplicationRouter.navigateTo(Screen.TaskCreationScreen)
+                    }
                 }
             }
         }
-
     }
-}
+
     private fun printState() {
         Log.d(TAG, "Inside_printState")
         Log.d(TAG, signUpUIState.value.toString())
