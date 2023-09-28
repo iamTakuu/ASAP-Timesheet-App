@@ -74,7 +74,7 @@ class TaskCreationViewModel : ViewModel() {
 
             // CREATE TASK HERE
             is TaskCreatedEvent.TaskCreationButtonClicked -> {
-
+                createTask()
                 printState()
             }
         }

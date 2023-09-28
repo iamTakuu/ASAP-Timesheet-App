@@ -1,6 +1,13 @@
 package com.iamtakuu.asap_timesheet_app.components
 
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,8 +17,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -44,9 +53,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -315,8 +326,8 @@ fun PasswordFieldComponent(
     labelValue: String,
     painterResource: Painter,
     onTextSelected: (String) -> Unit,
-    errorStatus: Boolean) {
-
+    errorStatus: Boolean
+){
     val localFocusManager = LocalFocusManager.current
     val password = remember {
         mutableStateOf("")
@@ -376,7 +387,8 @@ fun PasswordFieldComponent(
 @Composable
 fun ButtonComponent(value: String,
                     onButtonClicked: () -> Unit,
-                    isEnabled: Boolean = false){
+                    isEnabled: Boolean = false
+){
     Button(
         onClick = {
             onButtonClicked.invoke()
@@ -405,9 +417,24 @@ fun ButtonComponent(value: String,
 }
 
 @Composable
-fun ButtonWithIconComponent(value: String,
-                    onButtonClicked: () -> Unit,
-                    isEnabled: Boolean = false){
+fun ImageRequestButtonIcon(labelValue: String,
+                           isEnabled: Boolean = false
+) {
+    var imageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
+    val context = LocalContext.current
+
+    val bitmap =  remember {
+        mutableStateOf<Bitmap?>(null)
+    }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent())
+    {
+            uri : Uri? -> imageUri = uri
+    }
     Box(
         modifier = Modifier
             .fillMaxWidth(),
@@ -420,16 +447,37 @@ fun ButtonWithIconComponent(value: String,
                 .background(
                     brush = Brush.horizontalGradient(listOf(Primary, Primary)),
                     shape = RoundedCornerShape(24.dp)
-                ),
+                )
+                .clickable { launcher.launch("image/*") },
             contentAlignment = Alignment.Center
         ) {
-            Image(painter = painterResource(id = R.drawable.profile),
+            Image(
+                painter = painterResource(id = R.drawable.profile),
                 contentDescription = null,
                 modifier = Modifier
                     .widthIn(60.dp)
                     .heightIn(60.dp)
-                    .clickable { onButtonClicked.invoke() }
             )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            imageUri?.let{
+                if (Build.VERSION.SDK_INT < 28) {
+                    bitmap.value = MediaStore.Images.Media.getBitmap(context.contentResolver,it)
+                }
+                else {
+                    val source = ImageDecoder.createSource(context.contentResolver,it)
+                    bitmap.value = ImageDecoder.decodeBitmap(source)
+                }
+
+                bitmap.value?.let {  btm ->
+                    Image(
+                        bitmap = btm.asImageBitmap(),
+                        contentDescription =null,
+                        modifier = Modifier.size(400.dp)
+                    )
+                }
+            }
         }
     }
 }
@@ -573,19 +621,6 @@ fun DateTimePickerComponent(
 @Composable
 fun DropDownMenuComponent(
     labelValue: String,
-    options: List<String> = listOf()
-) {
-    DropDownFormatter(
-        itemName = labelValue,
-        dropDownItems = options,
-        onItemClick = { /*TODO*/ }
-    )
-}
-
-@Composable
-fun DropDownFormatter(
-    modifier: Modifier = Modifier,
-    itemName: String,
     dropDownItems: List<String> = listOf(),
     onItemClick: (String) -> Unit,
 ) {
@@ -632,7 +667,7 @@ fun DropDownFormatter(
             ),
             contentAlignment = Alignment.CenterStart
         ){
-            Text(text = itemName,
+            Text(text = labelValue,
                 fontSize = 18.sp,
                 modifier = Modifier
                     .padding(50.dp, 0.dp)

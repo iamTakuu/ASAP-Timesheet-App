@@ -8,11 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -22,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.iamtakuu.asap_timesheet_app.R
 import com.iamtakuu.asap_timesheet_app.components.ButtonComponent
-import com.iamtakuu.asap_timesheet_app.components.ButtonWithIconComponent
+import com.iamtakuu.asap_timesheet_app.components.ImageRequestButtonIcon
 import com.iamtakuu.asap_timesheet_app.components.DateTimePickerComponent
 import com.iamtakuu.asap_timesheet_app.components.DescriptionFieldComponent
 import com.iamtakuu.asap_timesheet_app.components.DropDownMenuComponent
@@ -33,8 +28,6 @@ import com.iamtakuu.asap_timesheet_app.data.tasks.TaskCreationViewModel
 
 @Composable
 fun TaskCreationScreen(taskCreationViewModel: TaskCreationViewModel = viewModel()){
-
-
     Surface (
         modifier = Modifier
             .fillMaxSize()
@@ -48,13 +41,9 @@ fun TaskCreationScreen(taskCreationViewModel: TaskCreationViewModel = viewModel(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Optional Image
-            ButtonWithIconComponent(
-                value = stringResource(id = R.string.add_image),
-                onButtonClicked = {
-                    // DO REFERENCE FOR ADDING A PHOTO HERE
-                    //taskCreationViewModel.onEvent(TaskCreatedEvent.<ONCLICKMETHOD>)
-                },
+            // Image
+            ImageRequestButtonIcon(
+                labelValue = stringResource(id = R.string.add_image),
                 isEnabled = taskCreationViewModel.allValidationsPassed.value
             )
 
@@ -63,11 +52,12 @@ fun TaskCreationScreen(taskCreationViewModel: TaskCreationViewModel = viewModel(
             // Category
             DropDownMenuComponent(
                 labelValue = stringResource(id = R.string.category),
-                options = listOf(
+                dropDownItems = listOf(
                     "Option 1",
                     "Option 2",
                     "Option 3"
-                )
+                ),
+                onItemClick = { /*TODO*/ }
             )
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -75,12 +65,13 @@ fun TaskCreationScreen(taskCreationViewModel: TaskCreationViewModel = viewModel(
             // Tags
             DropDownMenuComponent(
                 labelValue = stringResource(id = R.string.tags),
-                options = listOf(
+                dropDownItems = listOf(
                     "Tag 1",
                     "Tag 2",
                     "Tag 3",
                     "Tag 4"
-                )
+                ),
+                onItemClick = { /*TODO*/ }
             )
 
             Spacer(modifier = Modifier.height(10.dp))
