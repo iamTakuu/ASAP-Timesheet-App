@@ -37,9 +37,16 @@ class TaskCreationViewModel : ViewModel() {
                 printState()
             }
 
-            is TaskCreatedEvent.TimeChanged -> {
+            is TaskCreatedEvent.MinTimeChanged -> {
                 taskCreationState.value = taskCreationState.value.copy(
-                    time = event.time
+                    minTime = event.minTime
+                )
+                printState()
+            }
+
+            is TaskCreatedEvent.MaxTimeChanged -> {
+                taskCreationState.value = taskCreationState.value.copy(
+                    maxTime = event.maxTime
                 )
                 printState()
             }
@@ -67,7 +74,7 @@ class TaskCreationViewModel : ViewModel() {
 
             // CREATE TASK HERE
             is TaskCreatedEvent.TaskCreationButtonClicked -> {
-                //login()
+
                 printState()
             }
         }
@@ -84,8 +91,12 @@ class TaskCreationViewModel : ViewModel() {
             endDate = taskCreationState.value.endDate
         )
 
-        val timeResult = Validator.validateTime(
-            time = taskCreationState.value.time
+        val minTimeResult = Validator.validateMinTime(
+            minTime = taskCreationState.value.minTime
+        )
+
+        val maxTimeResult = Validator.validateMaxTime(
+            maxTime = taskCreationState.value.maxTime
         )
 
         val categoryResult = Validator.validateCategory(
@@ -95,19 +106,22 @@ class TaskCreationViewModel : ViewModel() {
         taskCreationState.value = taskCreationState.value.copy(
             startDateError = startDateResult.status,
             endDateError = endDateResult.status,
-            timeError = timeResult.status,
+            minTimeError = minTimeResult.status,
+            maxTimeError = maxTimeResult.status,
             categoryError = categoryResult.status,
         )
         Log.d(TAG, "Inside_validateTaskCreationDataWithRules")
         Log.d(TAG, "startDateResult= $startDateResult")
         Log.d(TAG, "endDateResult= $endDateResult")
-        Log.d(TAG, "timeResult= $timeResult")
+        Log.d(TAG, "minTimeResult= $minTimeResult")
+        Log.d(TAG, "maxTimeResult= $maxTimeResult")
         Log.d(TAG, "categoryResult= $categoryResult")
 
         allValidationsPassed.value =
                 startDateResult.status
                 && endDateResult.status
-                && timeResult.status
+                && minTimeResult.status
+                && maxTimeResult.status
                 && categoryResult.status
     }
 
@@ -116,7 +130,8 @@ class TaskCreationViewModel : ViewModel() {
         val icon = taskCreationState.value.icon
         val startDate = taskCreationState.value.startDate
         val endDate = taskCreationState.value.endDate
-        val time = taskCreationState.value.time
+        val minTime = taskCreationState.value.minTime
+        val maxTime = taskCreationState.value.maxTime
         val category = taskCreationState.value.category
         val tags = taskCreationState.value.tags
         val description = taskCreationState.value.description

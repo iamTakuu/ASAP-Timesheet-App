@@ -86,10 +86,27 @@ fun TaskCreationScreen(taskCreationViewModel: TaskCreationViewModel = viewModel(
             // End Date
             DateTimePickerComponent(labelValue = stringResource(id = R.string.end_date))
 
+            // Minimum Time
+            TextFieldComponent(
+                labelValue = stringResource(id = R.string.min_time),
+                painterResource(id = R.drawable.google),
+                onTextSelected = {
+                    taskCreationViewModel.onEvent(TaskCreatedEvent.MinTimeChanged(it))
+                }
+            )
+
+            // Maximum Time
+            TextFieldComponent(
+                labelValue = stringResource(id = R.string.max_time),
+                painterResource(id = R.drawable.google),
+                onTextSelected = {
+                    taskCreationViewModel.onEvent(TaskCreatedEvent.MinTimeChanged(it))
+                }
+            )
+
             // Description
             DescriptionFieldComponent(
                 labelValue = stringResource(id = R.string.description),
-                painterResource(id = R.drawable.google),
                 200.dp,
                 300.dp,
                 onTextSelected = {

@@ -43,15 +43,21 @@ object Validator {
         )
     }
 
-    fun validateTime(time: Int):ValidationResult{
-        return ValidationResult(
-            (time > 0)
-        )
-    }
-
     fun validateCategory(category: String):ValidationResult{
         return ValidationResult(
             (category.isNotEmpty() && category.length >= 2)
+        )
+    }
+
+    fun validateMinTime(minTime: String): ValidationResult {
+        return ValidationResult(
+            /*TODO*/
+        )
+    }
+
+    fun validateMaxTime(maxTime: String): ValidationResult {
+        return ValidationResult(
+            /*TODO*/
         )
     }
     // ^ ^ ^ ^ ^

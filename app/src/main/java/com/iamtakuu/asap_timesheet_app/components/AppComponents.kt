@@ -260,7 +260,6 @@ fun TextFieldComponent(
 @Composable
 fun DescriptionFieldComponent(
     labelValue: String,
-    painterResource: Painter,
     sizeMin: Dp,
     sizeMax: Dp,
     onTextSelected: (String) -> Unit) {
@@ -419,7 +418,7 @@ fun ButtonWithIconComponent(value: String,
                 .widthIn(80.dp)
                 .heightIn(80.dp)
                 .background(
-                    brush = Brush.horizontalGradient(listOf(Secondary, Primary)),
+                    brush = Brush.horizontalGradient(listOf(Primary, Primary)),
                     shape = RoundedCornerShape(24.dp)
                 ),
             contentAlignment = Alignment.Center
@@ -602,7 +601,7 @@ fun DropDownFormatter(
         mutableStateOf(0.dp)
     }
 
-    var density = LocalDensity.current
+    val density = LocalDensity.current
 
     Button(
         onClick = {
@@ -650,7 +649,7 @@ fun DropDownFormatter(
     ) {
         dropDownItems.forEach{ item ->
             DropdownMenuItem(
-                    text = { item },
+                    text = { Text(text = item) },
                     onClick = {
                         onItemClick(item)
                         dropDownContextState = false
