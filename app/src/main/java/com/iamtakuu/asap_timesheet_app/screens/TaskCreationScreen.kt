@@ -53,26 +53,6 @@ fun TaskCreationScreen(taskCreationViewModel: TaskCreationViewModel = viewModel(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Start Date
-            DateTimePickerComponent(labelValue = stringResource(id = R.string.start_date))
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // End Date
-            DateTimePickerComponent(labelValue = stringResource(id = R.string.end_date))
-
-            // Time
-            TextFieldComponent(
-                labelValue = stringResource(id = R.string.time),
-                painterResource(id = R.drawable.google),
-                onTextSelected = {
-                    taskCreationViewModel.onEvent(TaskCreatedEvent.TimeChanged(it.toInt()))
-                }
-            )
-
-
-            Spacer(modifier = Modifier.height(10.dp))
-
             // Category
             DropDownMenuComponent(
                 labelValue = stringResource(id = R.string.category),
@@ -98,30 +78,20 @@ fun TaskCreationScreen(taskCreationViewModel: TaskCreationViewModel = viewModel(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            /*
-            // Category
-            TextFieldComponent(
-                labelValue = stringResource(id = R.string.category),
-                painterResource(id = R.drawable.google),
-                onTextSelected = {
-                    taskCreationViewModel.onEvent(TaskCreatedEvent.CategoryChanged(it))
-                }
-            )
+            // Start Date
+            DateTimePickerComponent(labelValue = stringResource(id = R.string.start_date))
 
-            // Tags
-            TextFieldComponent(
-                labelValue = stringResource(id = R.string.tags),
-                painterResource(id = R.drawable.google),
-                onTextSelected = {
-                    taskCreationViewModel.onEvent(TaskCreatedEvent.TagsChanged(it))
-                }
-            )
-            */
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // End Date
+            DateTimePickerComponent(labelValue = stringResource(id = R.string.end_date))
 
             // Description
             DescriptionFieldComponent(
                 labelValue = stringResource(id = R.string.description),
                 painterResource(id = R.drawable.google),
+                200.dp,
+                300.dp,
                 onTextSelected = {
                     taskCreationViewModel.onEvent(TaskCreatedEvent.DescriptionChanged(it))
                 }

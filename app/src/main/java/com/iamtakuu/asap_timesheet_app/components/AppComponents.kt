@@ -9,14 +9,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
@@ -26,7 +23,6 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
@@ -67,6 +63,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -258,6 +255,8 @@ fun TextFieldComponent(
 fun DescriptionFieldComponent(
     labelValue: String,
     painterResource: Painter,
+    sizeMin: Dp,
+    sizeMax: Dp,
     onTextSelected: (String) -> Unit) {
 
     val textValue = remember {
@@ -266,7 +265,7 @@ fun DescriptionFieldComponent(
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(100.dp, 200.dp)
+            .heightIn(sizeMin, sizeMax)
             .clip(componentShapes.small),
         label = { Text(text = labelValue, Modifier.padding(0.dp, 0.dp)) },
         colors = OutlinedTextFieldDefaults.colors(
@@ -566,22 +565,11 @@ fun DropDownMenuComponent(
     labelValue: String,
     options: List<String> = listOf()
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        items(
-            listOf(
-                labelValue
-            )
-        ) { item ->
-            DropDownFormatter(
-                itemName = item,
-                dropDownItems = options,
-                onItemClick = { Log.d("Drop Down: ", item) }
-            )
-        }
-    }
+    DropDownFormatter(
+        itemName = labelValue,
+        dropDownItems = options,
+        onItemClick = { /*TODO*/ }
+    )
 }
 
 @Composable
@@ -605,40 +593,58 @@ fun DropDownFormatter(
 
     var density = LocalDensity.current
 
-    Card(
+    Button(
+        onClick = {
+            dropDownContextState = true
+        },
         modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(48.dp)
+            .pointerInput(true) {
+                detectTapGestures(
+                    onPress = {
+                        touchOffset = DpOffset(it.x.toDp(), it.y.toDp())
+                    }
+                )
+            }
             .onSizeChanged {
                 itemHeight = with(density) { it.height.toDp() }
-            }
+            },
+        contentPadding = PaddingValues(0.dp, 0.dp),
+        colors = ButtonDefaults.buttonColors(Color.Transparent)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .pointerInput(true) {
-                    detectTapGestures(
-                        onLongPress = {
-                            dropDownContextState = true
-                            touchOffset = DpOffset(it.x.toDp(), it.y.toDp())
-                        }
-                    )
-                }
-                .padding(16.dp)
-        ) {
-            Text(text = itemName)
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(48.dp)
+            .background(
+                brush = Brush.horizontalGradient(listOf(Secondary, Primary)),
+                shape = RoundedCornerShape(50.dp)
+            ),
+            contentAlignment = Alignment.CenterStart
+        ){
+            Text(text = itemName,
+                fontSize = 18.sp,
+                modifier = Modifier
+                    .padding(50.dp, 0.dp)
+            )
         }
+    }
 
-        DropdownMenu(
-            expanded = dropDownContextState,
-            onDismissRequest = { dropDownContextState = false }
-        ) {
-            dropDownItems.forEach{
-                    item -> DropdownMenuItem(
-                        text = { item },
-                        onClick = {
+    DropdownMenu(
+        expanded = dropDownContextState,
+        onDismissRequest = { dropDownContextState = false },
+        offset = touchOffset.copy(
+            y = touchOffset.y - itemHeight
+        )
+    ) {
+        dropDownItems.forEach{ item ->
+            DropdownMenuItem(
+                    text = { item },
+                    onClick = {
                         onItemClick(item)
                         dropDownContextState = false
-                })
-            }
+                    }
+            )
         }
     }
 }
