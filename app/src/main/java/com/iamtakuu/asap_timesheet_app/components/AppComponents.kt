@@ -219,8 +219,10 @@ fun ClickableLoginComponent(tryingToLogin: Boolean = true, onTextSelected: (Stri
 fun TextFieldComponent(
     labelValue: String,
     painterResource: Painter,
-    onTextSelected: (String) -> Unit) {
+    onTextSelected: (String) -> Unit,
+    errorStatus: Boolean = false) {
 
+    val localFocusManager = LocalFocusManager.current
     val textValue = remember {
         mutableStateOf("")
     }
@@ -239,6 +241,9 @@ fun TextFieldComponent(
             focusedLabelColor = Primary,
         ),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        keyboardActions = KeyboardActions{
+            localFocusManager.clearFocus()
+        },
         singleLine = true,
         maxLines = 1,
         value = textValue.value,
@@ -247,7 +252,8 @@ fun TextFieldComponent(
             onTextSelected(it)},
         leadingIcon = {
             Icon(painter = painterResource, contentDescription = "")
-        }
+        },
+        isError = !errorStatus
     )
 }
 
@@ -309,7 +315,8 @@ fun UnderLinedTextComponent(value: String) {
 fun PasswordFieldComponent(
     labelValue: String,
     painterResource: Painter,
-    onTextSelected: (String) -> Unit) {
+    onTextSelected: (String) -> Unit,
+    errorStatus: Boolean) {
 
     val localFocusManager = LocalFocusManager.current
     val password = remember {
@@ -362,7 +369,8 @@ fun PasswordFieldComponent(
         },
         visualTransformation = if (passwordVisible.value) VisualTransformation.None else {
             PasswordVisualTransformation()
-        }
+        },
+        isError = !errorStatus
     )
 }
 
@@ -377,7 +385,8 @@ fun ButtonComponent(value: String,
         modifier = Modifier
             .fillMaxWidth(),
         contentPadding = PaddingValues(),
-        colors = ButtonDefaults.buttonColors(Color.Transparent)
+        colors = ButtonDefaults.buttonColors(Color.Transparent),
+        enabled = isEnabled
 
     ) {
         Box(modifier = Modifier
@@ -427,13 +436,14 @@ fun ButtonWithIconComponent(value: String,
 }
 
 @Composable
-fun GoogleSignComponent(){
+fun GoogleSignComponent(isEnabled: Boolean = false){
     Button(onClick = { /*TODO*/ },
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(48.dp),
         contentPadding = PaddingValues(),
-        colors = ButtonDefaults.buttonColors(Color.Transparent)
+        colors = ButtonDefaults.buttonColors(Color.Transparent),
+        enabled = isEnabled
     ) {
         Box(modifier = Modifier
             .fillMaxWidth()
@@ -462,13 +472,14 @@ fun GoogleSignComponent(){
 }
 
 @Composable
-fun MetaSignComponent(){
+fun MetaSignComponent(isEnabled: Boolean = false){
     Button(onClick = { /*TODO*/ },
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(48.dp),
         contentPadding = PaddingValues(),
-        colors = ButtonDefaults.buttonColors(Color.Transparent)
+        colors = ButtonDefaults.buttonColors(Color.Transparent),
+        enabled = isEnabled
 
     ) {
         Box(modifier = Modifier
