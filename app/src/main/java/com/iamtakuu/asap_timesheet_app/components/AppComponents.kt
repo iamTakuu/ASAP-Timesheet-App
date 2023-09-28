@@ -638,23 +638,23 @@ fun DropDownFormatter(
                     .padding(50.dp, 0.dp)
             )
         }
-    }
 
-    DropdownMenu(
-        expanded = dropDownContextState,
-        onDismissRequest = { dropDownContextState = false },
-        offset = touchOffset.copy(
-            y = touchOffset.y - itemHeight
-        )
-    ) {
-        dropDownItems.forEach{ item ->
-            DropdownMenuItem(
+        DropdownMenu(
+            expanded = dropDownContextState,
+            onDismissRequest = { dropDownContextState = false },
+            offset = touchOffset.copy(
+                y = touchOffset.y - itemHeight
+            )
+        ) {
+            dropDownItems.forEach{ item ->
+                DropdownMenuItem(
                     text = { Text(text = item) },
                     onClick = {
                         onItemClick(item)
                         dropDownContextState = false
                     }
-            )
+                )
+            }
         }
     }
 }
