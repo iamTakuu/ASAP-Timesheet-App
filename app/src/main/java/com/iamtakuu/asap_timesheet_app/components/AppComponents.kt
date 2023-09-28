@@ -233,7 +233,6 @@ fun TextFieldComponent(
     onTextSelected: (String) -> Unit,
     errorStatus: Boolean = false) {
 
-    val localFocusManager = LocalFocusManager.current
     val textValue = remember {
         mutableStateOf("")
     }
@@ -252,9 +251,6 @@ fun TextFieldComponent(
             focusedLabelColor = Primary,
         ),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-        keyboardActions = KeyboardActions{
-            localFocusManager.clearFocus()
-        },
         singleLine = true,
         maxLines = 1,
         value = textValue.value,
@@ -314,7 +310,7 @@ fun UnderLinedTextComponent(value: String) {
             fontWeight = FontWeight.Normal,
             fontStyle = FontStyle.Normal
         ),
-        color = PurpleGrey40,
+        color = GoogleRed,
         textAlign = TextAlign.Center,
         textDecoration = TextDecoration.Underline
     )

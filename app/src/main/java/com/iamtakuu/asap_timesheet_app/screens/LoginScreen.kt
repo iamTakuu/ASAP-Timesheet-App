@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -67,7 +69,9 @@ fun LoginScreen(loginViewModel: LoginViewModel = viewModel()){
             )
             Spacer(modifier = Modifier.height(20.dp))
 
-            UnderLinedTextComponent(value = stringResource(id = R.string.forgot_password))
+            if (loginViewModel.loginInError.value){
+                UnderLinedTextComponent(value = stringResource(id = R.string.invalid_login))
+            }
 
             Spacer(modifier = Modifier.height(180.dp))
 
@@ -75,6 +79,7 @@ fun LoginScreen(loginViewModel: LoginViewModel = viewModel()){
                 value = stringResource(id = R.string.login),
                 onButtonClicked = {
                     loginViewModel.onEvent(LoginUIEvent.LoginButtonClicked)
+                    //loginViewModel.loginInError.value != loginViewModel.loginInError.value
                 },
                 isEnabled = loginViewModel.allValidationsPassed.value)
 
@@ -90,6 +95,14 @@ fun LoginScreen(loginViewModel: LoginViewModel = viewModel()){
             ClickableLoginComponent(tryingToLogin = false, onTextSelected = {
                 ApplicationRouter.navigateTo(Screen.SignUpScreen)
             })
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            if(loginViewModel.loginInProgress.value) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            }
         }
     }
             SystemBackButtonHandler {

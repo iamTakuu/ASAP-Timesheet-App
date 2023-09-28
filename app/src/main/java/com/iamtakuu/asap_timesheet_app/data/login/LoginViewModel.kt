@@ -3,10 +3,25 @@ package com.iamtakuu.asap_timesheet_app.data.login
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.iamtakuu.asap_timesheet_app.data.rules.Validator
+import com.iamtakuu.asap_timesheet_app.data.user.SupaResult
+import com.iamtakuu.asap_timesheet_app.navigation.ApplicationRouter
+import com.iamtakuu.asap_timesheet_app.navigation.Screen
+import com.iamtakuu.asap_timesheet_app.repository.impl.AuthRepositoryImp
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-// Use this shit to hold UI data
-class LoginViewModel : ViewModel(){
+
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val repository: AuthRepositoryImp
+): ViewModel(){
     private val TAG = LoginViewModel::class.simpleName
 
     var loginUIState = mutableStateOf(LoginUIState())
@@ -14,6 +29,12 @@ class LoginViewModel : ViewModel(){
     var allValidationsPassed = mutableStateOf(false)
 
     var loginInProgress = mutableStateOf(false)
+    var loginInError = mutableStateOf(false)
+
+
+    private val _uiState = MutableStateFlow<SupaResult<*>>(SupaResult.Loading)
+    val uiState: StateFlow<SupaResult<*>>
+        get() = _uiState
 
     fun onEvent(event: LoginUIEvent) {
         when (event) {
@@ -21,19 +42,19 @@ class LoginViewModel : ViewModel(){
                 loginUIState.value = loginUIState.value.copy(
                     email = event.email
                 )
-                printState()
             }
 
             is LoginUIEvent.PasswordChanged -> {
                 loginUIState.value = loginUIState.value.copy(
                     password = event.password
                 )
-                printState()
             }
 
             is LoginUIEvent.LoginButtonClicked -> {
-                login()
-                printState()
+                if (allValidationsPassed.value){
+                    login()
+                    observeLoginState()
+                }
             }
         }
 
@@ -44,12 +65,9 @@ class LoginViewModel : ViewModel(){
         val emailResult = Validator.validateEmail(
             email = loginUIState.value.email
         )
-
-
         val passwordResult = Validator.validatePassword(
             password = loginUIState.value.password
         )
-
         loginUIState.value = loginUIState.value.copy(
             emailError = emailResult.status,
             passwordError = passwordResult.status
@@ -63,13 +81,34 @@ class LoginViewModel : ViewModel(){
 
     private fun login() {
         loginInProgress.value = true
-        val email = loginUIState.value.email
-        val password = loginUIState.value.password
-
-        //TODO: Connect to SupaBase and check if the user exists
+        viewModelScope.launch {
+            repository.signIn(loginUIState.value.email, loginUIState.value.password).collectLatest { data ->
+                _uiState.update { data }
+            }
+        }
     }
-    private fun printState(){
-        Log.d(TAG, "Inside_login_printState")
-        Log.d(TAG, loginUIState.value.toString())
+
+    private fun observeLoginState(){
+        viewModelScope.launch {
+            uiState.collectLatest { data ->
+                when(data){
+                    is SupaResult.Error -> {
+                        loginInProgress.value = false
+                        loginInError.value = true
+                        Log.e("SignUpVM", "Message ${data.message}")
+                    }
+                    is SupaResult.Loading -> {
+                        loginInProgress.value = true
+                        loginInError.value = false
+                        Log.e("SignUpVM", "Loading...")
+                    }
+                    is SupaResult.Success -> {
+                        Log.e("SignUpVM", "Epic ${data.data}")
+                        ApplicationRouter.navigateTo(Screen.TaskCreationScreen)
+                    }
+                }
+            }
+
+        }
     }
 }

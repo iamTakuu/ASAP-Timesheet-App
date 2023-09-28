@@ -1,8 +1,5 @@
 package com.iamtakuu.asap_timesheet_app.module
 
-import com.iamtakuu.asap_timesheet_app.data.user.UserDataSource
-import com.iamtakuu.asap_timesheet_app.repository.DefaultUserRepository
-import com.iamtakuu.asap_timesheet_app.repository.UserRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,7 +7,11 @@ import dagger.hilt.components.SingletonComponent
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.gotrue.GoTrue
+import io.github.jan.supabase.gotrue.gotrue
 import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.serializer.KotlinXSerializer
+import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
 const val SUPABASEURL = "https://eombpjefbvbngrpcccnw.supabase.co"
@@ -26,18 +27,22 @@ object NetworkModule {
             supabaseUrl = SUPABASEURL,
             supabaseKey = SUPABASEKEY
         ) {
+            defaultSerializer = KotlinXSerializer(Json {
+                ignoreUnknownKeys = true
+            })
             this.install(Postgrest)
             this.install(GoTrue)
         }
     }
     @Provides
     @Singleton
-    fun provideUserDataSource(client: SupabaseClient): UserDataSource {
-        return UserDataSource(client)
+    fun providePostgrest(client: SupabaseClient): Postgrest {
+        return client.postgrest
     }
+
     @Provides
     @Singleton
-    fun provideUserRepository(dataSource: UserDataSource) : UserRepository{
-        return DefaultUserRepository(dataSource)
+    fun provideGoTrue(client: SupabaseClient): GoTrue {
+        return client.gotrue
     }
 }

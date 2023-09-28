@@ -51,23 +51,6 @@ fun SignUpScreen(signupViewModel: SignUpViewModel = viewModel()) {
                 HeadingTextComponent(value = stringResource(id = R.string.create_account))
 
                 Spacer(modifier = Modifier.height(20.dp))
-
-                TextFieldComponent(
-                    labelValue = stringResource(id = R.string.first_name),
-                    painterResource(id = R.drawable.profile),
-                    onTextSelected = {
-                        signupViewModel.onEvent(SignUpUIEvent.FirstNameChanged(it))
-                    },
-                    errorStatus = signupViewModel.signUpUIState.value.firstNameError
-                )
-                TextFieldComponent(
-                    labelValue = stringResource(id = R.string.last_name),
-                    painterResource(id = R.drawable.profile),
-                    onTextSelected = {
-                        signupViewModel.onEvent(SignUpUIEvent.LastNameChanged(it))
-                    },
-                    errorStatus = signupViewModel.signUpUIState.value.lastNameError
-                )
                 TextFieldComponent(
                     labelValue = stringResource(id = R.string.email),
                     painterResource(id = R.drawable.message),
@@ -93,8 +76,7 @@ fun SignUpScreen(signupViewModel: SignUpViewModel = viewModel()) {
 
                     }
                 )
-
-                Spacer(modifier = Modifier.height(80.dp))
+                Spacer(modifier = Modifier.height(200.dp))
 
                 ButtonComponent(
                     value = stringResource(id = R.string.register),
