@@ -1,11 +1,14 @@
 package com.iamtakuu.asap_timesheet_app.data.statistics
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
@@ -17,10 +20,12 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.iamtakuu.asap_timesheet_app.R
 import com.iamtakuu.asap_timesheet_app.ui.theme.GoogleBlue
 import com.iamtakuu.asap_timesheet_app.ui.theme.Pink40
 import com.iamtakuu.asap_timesheet_app.ui.theme.Pink80
@@ -154,7 +159,9 @@ fun DetailsPieChartItem(
     height: Dp = 25.dp,
     color: Color
 ) {
-
+    var expand by remember {
+        mutableStateOf(false)
+    }
     Surface(
         modifier = Modifier
             .padding(vertical = 5.dp, horizontal = 20.dp),
@@ -162,7 +169,11 @@ fun DetailsPieChartItem(
     ) {
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
+                .clickable {
+                    expand = !expand;
+                }
+                .animateContentSize(),
             verticalAlignment = Alignment.CenterVertically
         ) {
 
@@ -173,6 +184,7 @@ fun DetailsPieChartItem(
                         shape = RoundedCornerShape(10.dp)
                     )
                     .size(height)
+
             )
 
             Column(modifier = Modifier.fillMaxWidth()) {
@@ -190,6 +202,23 @@ fun DetailsPieChartItem(
                     fontSize = 15.sp,
                     color = Color.Gray
                 )
+
+                if (expand) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Image(
+                        painter = painterResource(id = R.drawable.profile),
+                        contentDescription = "Task image",
+                        modifier = Modifier.size(96.dp)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        modifier = Modifier.padding(start = 16.dp),
+                        text = "Placeholder",
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 14.sp,
+                        color = Color.Gray
+                    )
+                }
             }
 
         }

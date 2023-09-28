@@ -3,9 +3,11 @@ package com.iamtakuu.asap_timesheet_app.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -26,32 +28,38 @@ import com.iamtakuu.asap_timesheet_app.ui.theme.Purple80
 import com.iamtakuu.asap_timesheet_app.ui.theme.Secondary
 
 @Composable
-private fun StatisticsShow(modifier: Modifier = Modifier){
+private fun StatisticsShow(modifier: Modifier = Modifier) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        content = {
+            item {
+                Surface(
+                    color = Color.White,
+                    modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+                ) {
+                    Column {
+                        HeadingTextComponent(value = stringResource(id = R.string.statistics))
 
-    Surface(color = Color.White, modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)) {
-        Column {
-            HeadingTextComponent(value = stringResource(id = R.string.statistics))
+                        Spacer(modifier = Modifier.height(50.dp))
 
-
-
-            Spacer(modifier = Modifier.height(50.dp))
-
-            // Preview with sample data
-            PieChart(
-                //Data used example "Name of Task" and "Value" such as time
-                //Value is auto added up and pie chart reflects percentage accordingly
-                data = mapOf(
-                    Pair("Gym", 100),
-                    Pair("Touch Grass", 120),
-                    Pair("Video Games", 110),
-                    Pair("Stream", 170),
-                    Pair("Assignment", 120),
-                )
-            )
+                        // Preview with sample data
+                        PieChart(
+                            //Data used example "Name of Task" and "Value" such as time
+                            //Value is auto added up and pie chart reflects percentage accordingly
+                            data = mapOf(
+                                Pair("Gym", 100),
+                                Pair("Touch Grass", 120),
+                                Pair("Video Games", 110),
+                                Pair("Stream", 170),
+                                Pair("Assignment", 120),
+                            )
+                        )
+                    }
+                }
+            }
         }
-    }
+    )
 }
-
 
 
 
