@@ -1,20 +1,20 @@
 package com.iamtakuu.asap_timesheet_app.data.tasks
 
-import android.media.Image
+import android.net.Uri
 
 data class TaskCreationState(
-    var icon  :String = "",
-    //var icon  :Image = ...,
+    var icon  :Uri = Uri.EMPTY,
     var startDate  :String = "",
     var endDate  :String = "",
-    var time  :Int = 0,
+    var minTime  :String = "",
+    var maxTime  :String = "",
     var category  :String = "",
-    var tags  :String = "",
-    //var tags  :List<String> = ...,
+    var tags  :List<String> = listOf(),
     var description  :String = "",
 
     var startDateError :Boolean = false,
     var endDateError : Boolean = false,
-    var timeError : Boolean = false,
+    var minTimeError : Boolean = false,
+    var maxTimeError : Boolean = false,
     var categoryError : Boolean = false,
 )

@@ -29,32 +29,42 @@ object Validator {
         )
     }
 
-    // Will implement proper validation later
-    // v v v v v
     fun validateStartDate(startDate: String):ValidationResult{
         return ValidationResult(
-            (startDate.isNotEmpty() && startDate.length >= 2)
+            (startDate.isNotEmpty())
         )
     }
 
     fun validateEndDate(endDate: String):ValidationResult{
         return ValidationResult(
-            (endDate.isNotEmpty() && endDate.length >= 2)
-        )
-    }
-
-    fun validateTime(time: Int):ValidationResult{
-        return ValidationResult(
-            (time > 0)
+            (endDate.isNotEmpty())
         )
     }
 
     fun validateCategory(category: String):ValidationResult{
         return ValidationResult(
-            (category.isNotEmpty() && category.length >= 2)
+            (category.isNotEmpty())
         )
     }
-    // ^ ^ ^ ^ ^
+
+    fun validateMinTime(minTime: String): ValidationResult {
+        return ValidationResult(
+            validateTime(minTime)
+        )
+    }
+
+    fun validateMaxTime(maxTime: String): ValidationResult {
+        return ValidationResult(
+            validateTime(maxTime)
+        )
+    }
+
+    private fun validateTime(time: String): Boolean {
+        return time.isNotEmpty() &&
+                time.substring(0, 2).toIntOrNull() != null &&
+                time.substring(2, 3) == ":" &&
+                time.substring(3, 5).toIntOrNull() != null
+    }
 
     // NB: "Icon", "Tags", and "Description" will not be validated as they are optional
 }

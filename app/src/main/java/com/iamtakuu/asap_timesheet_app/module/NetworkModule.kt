@@ -1,7 +1,7 @@
 package com.iamtakuu.asap_timesheet_app.module
 
 import com.iamtakuu.asap_timesheet_app.data.user.UserDataSource
-import com.iamtakuu.asap_timesheet_app.repository.DefualtUserRepository
+import com.iamtakuu.asap_timesheet_app.repository.DefaultUserRepository
 import com.iamtakuu.asap_timesheet_app.repository.UserRepository
 import dagger.Module
 import dagger.Provides
@@ -38,6 +38,6 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideUserRepository(dataSource: UserDataSource) : UserRepository{
-        return DefualtUserRepository(dataSource)
+        return DefaultUserRepository(dataSource)
     }
 }

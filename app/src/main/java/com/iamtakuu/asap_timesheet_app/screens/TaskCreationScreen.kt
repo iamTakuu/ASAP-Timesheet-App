@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.iamtakuu.asap_timesheet_app.R
 import com.iamtakuu.asap_timesheet_app.components.ButtonComponent
-import com.iamtakuu.asap_timesheet_app.components.ButtonWithIconComponent
+import com.iamtakuu.asap_timesheet_app.components.ImageRequestButtonIcon
 import com.iamtakuu.asap_timesheet_app.components.DateTimePickerComponent
 import com.iamtakuu.asap_timesheet_app.components.DescriptionFieldComponent
 import com.iamtakuu.asap_timesheet_app.components.DropDownMenuComponent
@@ -41,14 +41,37 @@ fun TaskCreationScreen(taskCreationViewModel: TaskCreationViewModel = viewModel(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Optional Image
-            ButtonWithIconComponent(
-                value = stringResource(id = R.string.add_image),
-                onButtonClicked = {
-                    // DO REFERENCE FOR ADDING A PHOTO HERE
-                    //taskCreationViewModel.onEvent(TaskCreatedEvent.<ONCLICKMETHOD>)
-                },
+            // Image
+            ImageRequestButtonIcon(
+                labelValue = stringResource(id = R.string.add_image),
                 isEnabled = taskCreationViewModel.allValidationsPassed.value
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Category
+            DropDownMenuComponent(
+                labelValue = stringResource(id = R.string.category),
+                dropDownItems = listOf(
+                    "Option 1",
+                    "Option 2",
+                    "Option 3"
+                ),
+                onItemClick = { /*TODO*/ }
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Tags
+            DropDownMenuComponent(
+                labelValue = stringResource(id = R.string.tags),
+                dropDownItems = listOf(
+                    "Tag 1",
+                    "Tag 2",
+                    "Tag 3",
+                    "Tag 4"
+                ),
+                onItemClick = { /*TODO*/ }
             )
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -61,67 +84,29 @@ fun TaskCreationScreen(taskCreationViewModel: TaskCreationViewModel = viewModel(
             // End Date
             DateTimePickerComponent(labelValue = stringResource(id = R.string.end_date))
 
-            // Time
+            // Minimum Time
             TextFieldComponent(
-                labelValue = stringResource(id = R.string.time),
+                labelValue = stringResource(id = R.string.min_time),
                 painterResource(id = R.drawable.google),
                 onTextSelected = {
-                    taskCreationViewModel.onEvent(TaskCreatedEvent.TimeChanged(it.toInt()))
+                    taskCreationViewModel.onEvent(TaskCreatedEvent.MinTimeChanged(it))
                 }
             )
 
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // Category
-            DropDownMenuComponent(
-                labelValue = stringResource(id = R.string.category),
-                options = listOf(
-                    "Option 1",
-                    "Option 2",
-                    "Option 3"
-                )
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // Tags
-            DropDownMenuComponent(
-                labelValue = stringResource(id = R.string.tags),
-                options = listOf(
-                    "Tag 1",
-                    "Tag 2",
-                    "Tag 3",
-                    "Tag 4"
-                )
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            /*
-            // Category
+            // Maximum Time
             TextFieldComponent(
-                labelValue = stringResource(id = R.string.category),
+                labelValue = stringResource(id = R.string.max_time),
                 painterResource(id = R.drawable.google),
                 onTextSelected = {
-                    taskCreationViewModel.onEvent(TaskCreatedEvent.CategoryChanged(it))
+                    taskCreationViewModel.onEvent(TaskCreatedEvent.MinTimeChanged(it))
                 }
             )
-
-            // Tags
-            TextFieldComponent(
-                labelValue = stringResource(id = R.string.tags),
-                painterResource(id = R.drawable.google),
-                onTextSelected = {
-                    taskCreationViewModel.onEvent(TaskCreatedEvent.TagsChanged(it))
-                }
-            )
-            */
 
             // Description
             DescriptionFieldComponent(
                 labelValue = stringResource(id = R.string.description),
-                painterResource(id = R.drawable.google),
+                200.dp,
+                300.dp,
                 onTextSelected = {
                     taskCreationViewModel.onEvent(TaskCreatedEvent.DescriptionChanged(it))
                 }

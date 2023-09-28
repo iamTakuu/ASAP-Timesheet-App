@@ -55,6 +55,7 @@ fun LoginScreen(loginViewModel: LoginViewModel = viewModel()){
                 onTextSelected = {
                     loginViewModel.onEvent(LoginUIEvent.EmailChanged(it))
                 },
+                errorStatus = loginViewModel.loginUIState.value.emailError
             )
             PasswordFieldComponent(
                 labelValue = stringResource(id = R.string.password),
@@ -62,6 +63,7 @@ fun LoginScreen(loginViewModel: LoginViewModel = viewModel()){
                 onTextSelected = {
                     loginViewModel.onEvent(LoginUIEvent.PasswordChanged(it))
                 },
+                errorStatus = loginViewModel.loginUIState.value.passwordError
             )
             Spacer(modifier = Modifier.height(20.dp))
 

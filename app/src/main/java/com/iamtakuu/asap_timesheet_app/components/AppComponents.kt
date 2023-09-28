@@ -1,6 +1,13 @@
 package com.iamtakuu.asap_timesheet_app.components
 
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,14 +16,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
@@ -26,7 +32,6 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
@@ -48,9 +53,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -67,6 +74,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -222,8 +230,10 @@ fun ClickableLoginComponent(tryingToLogin: Boolean = true, onTextSelected: (Stri
 fun TextFieldComponent(
     labelValue: String,
     painterResource: Painter,
-    onTextSelected: (String) -> Unit) {
+    onTextSelected: (String) -> Unit,
+    errorStatus: Boolean = false) {
 
+    val localFocusManager = LocalFocusManager.current
     val textValue = remember {
         mutableStateOf("")
     }
@@ -242,6 +252,9 @@ fun TextFieldComponent(
             focusedLabelColor = Primary,
         ),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        keyboardActions = KeyboardActions{
+            localFocusManager.clearFocus()
+        },
         singleLine = true,
         maxLines = 1,
         value = textValue.value,
@@ -250,14 +263,16 @@ fun TextFieldComponent(
             onTextSelected(it)},
         leadingIcon = {
             Icon(painter = painterResource, contentDescription = "")
-        }
+        },
+        isError = !errorStatus
     )
 }
 
 @Composable
 fun DescriptionFieldComponent(
     labelValue: String,
-    painterResource: Painter,
+    sizeMin: Dp,
+    sizeMax: Dp,
     onTextSelected: (String) -> Unit) {
 
     val textValue = remember {
@@ -266,7 +281,7 @@ fun DescriptionFieldComponent(
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(100.dp, 200.dp)
+            .heightIn(sizeMin, sizeMax)
             .clip(componentShapes.small),
         label = { Text(text = labelValue, Modifier.padding(0.dp, 0.dp)) },
         colors = OutlinedTextFieldDefaults.colors(
@@ -310,8 +325,9 @@ fun UnderLinedTextComponent(value: String) {
 fun PasswordFieldComponent(
     labelValue: String,
     painterResource: Painter,
-    onTextSelected: (String) -> Unit) {
-
+    onTextSelected: (String) -> Unit,
+    errorStatus: Boolean
+){
     val localFocusManager = LocalFocusManager.current
     val password = remember {
         mutableStateOf("")
@@ -363,14 +379,16 @@ fun PasswordFieldComponent(
         },
         visualTransformation = if (passwordVisible.value) VisualTransformation.None else {
             PasswordVisualTransformation()
-        }
+        },
+        isError = !errorStatus
     )
 }
 
 @Composable
 fun ButtonComponent(value: String,
                     onButtonClicked: () -> Unit,
-                    isEnabled: Boolean = false){
+                    isEnabled: Boolean = false
+){
     Button(
         onClick = {
             onButtonClicked.invoke()
@@ -378,7 +396,8 @@ fun ButtonComponent(value: String,
         modifier = Modifier
             .fillMaxWidth(),
         contentPadding = PaddingValues(),
-        colors = ButtonDefaults.buttonColors(Color.Transparent)
+        colors = ButtonDefaults.buttonColors(Color.Transparent),
+        enabled = isEnabled
 
     ) {
         Box(modifier = Modifier
@@ -398,9 +417,24 @@ fun ButtonComponent(value: String,
 }
 
 @Composable
-fun ButtonWithIconComponent(value: String,
-                    onButtonClicked: () -> Unit,
-                    isEnabled: Boolean = false){
+fun ImageRequestButtonIcon(labelValue: String,
+                           isEnabled: Boolean = false
+) {
+    var imageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
+    val context = LocalContext.current
+
+    val bitmap =  remember {
+        mutableStateOf<Bitmap?>(null)
+    }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent())
+    {
+            uri : Uri? -> imageUri = uri
+    }
     Box(
         modifier = Modifier
             .fillMaxWidth(),
@@ -411,30 +445,52 @@ fun ButtonWithIconComponent(value: String,
                 .widthIn(80.dp)
                 .heightIn(80.dp)
                 .background(
-                    brush = Brush.horizontalGradient(listOf(Secondary, Primary)),
+                    brush = Brush.horizontalGradient(listOf(Primary, Primary)),
                     shape = RoundedCornerShape(24.dp)
-                ),
+                )
+                .clickable { launcher.launch("image/*") },
             contentAlignment = Alignment.Center
         ) {
-            Image(painter = painterResource(id = R.drawable.profile),
+            Image(
+                painter = painterResource(id = R.drawable.profile),
                 contentDescription = null,
                 modifier = Modifier
                     .widthIn(60.dp)
                     .heightIn(60.dp)
-                    .clickable { onButtonClicked.invoke() }
             )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            imageUri?.let{
+                if (Build.VERSION.SDK_INT < 28) {
+                    bitmap.value = MediaStore.Images.Media.getBitmap(context.contentResolver,it)
+                }
+                else {
+                    val source = ImageDecoder.createSource(context.contentResolver,it)
+                    bitmap.value = ImageDecoder.decodeBitmap(source)
+                }
+
+                bitmap.value?.let {  btm ->
+                    Image(
+                        bitmap = btm.asImageBitmap(),
+                        contentDescription =null,
+                        modifier = Modifier.size(400.dp)
+                    )
+                }
+            }
         }
     }
 }
 
 @Composable
-fun GoogleSignComponent(){
+fun GoogleSignComponent(isEnabled: Boolean = false){
     Button(onClick = { /*TODO*/ },
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(48.dp),
         contentPadding = PaddingValues(),
-        colors = ButtonDefaults.buttonColors(Color.Transparent)
+        colors = ButtonDefaults.buttonColors(Color.Transparent),
+        enabled = isEnabled
     ) {
         Box(modifier = Modifier
             .fillMaxWidth()
@@ -463,13 +519,14 @@ fun GoogleSignComponent(){
 }
 
 @Composable
-fun MetaSignComponent(){
+fun MetaSignComponent(isEnabled: Boolean = false){
     Button(onClick = { /*TODO*/ },
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(48.dp),
         contentPadding = PaddingValues(),
-        colors = ButtonDefaults.buttonColors(Color.Transparent)
+        colors = ButtonDefaults.buttonColors(Color.Transparent),
+        enabled = isEnabled
 
     ) {
         Box(modifier = Modifier
@@ -564,30 +621,6 @@ fun DateTimePickerComponent(
 @Composable
 fun DropDownMenuComponent(
     labelValue: String,
-    options: List<String> = listOf()
-) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        items(
-            listOf(
-                labelValue
-            )
-        ) { item ->
-            DropDownFormatter(
-                itemName = item,
-                dropDownItems = options,
-                onItemClick = { Log.d("Drop Down: ", item) }
-            )
-        }
-    }
-}
-
-@Composable
-fun DropDownFormatter(
-    modifier: Modifier = Modifier,
-    itemName: String,
     dropDownItems: List<String> = listOf(),
     onItemClick: (String) -> Unit,
 ) {
@@ -603,41 +636,59 @@ fun DropDownFormatter(
         mutableStateOf(0.dp)
     }
 
-    var density = LocalDensity.current
+    val density = LocalDensity.current
 
-    Card(
+    Button(
+        onClick = {
+            dropDownContextState = true
+        },
         modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(48.dp)
+            .pointerInput(true) {
+                detectTapGestures(
+                    onPress = {
+                        touchOffset = DpOffset(it.x.toDp(), it.y.toDp())
+                    }
+                )
+            }
             .onSizeChanged {
                 itemHeight = with(density) { it.height.toDp() }
-            }
+            },
+        contentPadding = PaddingValues(0.dp, 0.dp),
+        colors = ButtonDefaults.buttonColors(Color.Transparent)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .pointerInput(true) {
-                    detectTapGestures(
-                        onLongPress = {
-                            dropDownContextState = true
-                            touchOffset = DpOffset(it.x.toDp(), it.y.toDp())
-                        }
-                    )
-                }
-                .padding(16.dp)
-        ) {
-            Text(text = itemName)
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(48.dp)
+            .background(
+                brush = Brush.horizontalGradient(listOf(Secondary, Primary)),
+                shape = RoundedCornerShape(50.dp)
+            ),
+            contentAlignment = Alignment.CenterStart
+        ){
+            Text(text = labelValue,
+                fontSize = 18.sp,
+                modifier = Modifier
+                    .padding(50.dp, 0.dp)
+            )
         }
 
         DropdownMenu(
             expanded = dropDownContextState,
-            onDismissRequest = { dropDownContextState = false }
+            onDismissRequest = { dropDownContextState = false },
+            offset = touchOffset.copy(
+                y = touchOffset.y - itemHeight
+            )
         ) {
-            dropDownItems.forEach{
-                    item -> DropdownMenuItem(
-                        text = { item },
-                        onClick = {
+            dropDownItems.forEach{ item ->
+                DropdownMenuItem(
+                    text = { Text(text = item) },
+                    onClick = {
                         onItemClick(item)
                         dropDownContextState = false
-                })
+                    }
+                )
             }
         }
     }

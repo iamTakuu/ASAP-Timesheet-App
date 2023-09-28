@@ -1,6 +1,7 @@
 package com.iamtakuu.asap_timesheet_app.data.user
 
 import com.iamtakuu.asap_timesheet_app.data.signup.SignUpViewModel
+import com.iamtakuu.asap_timesheet_app.data.tasks.TaskCreationViewModel
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.gotrue.gotrue
 import io.github.jan.supabase.gotrue.providers.builtin.Email
@@ -12,7 +13,7 @@ class UserDataSource @Inject constructor(
     private val supabaseClient: SupabaseClient
 ) {
     fun registerUser(user: SignUpViewModel.User) : Flow<SupaResult<Unit>> {
-        return  flow{
+        return flow{
             emit(SupaResult.Loading)
             try {
                 supabaseClient
@@ -22,12 +23,23 @@ class UserDataSource @Inject constructor(
                         password = user.password
                     }
                 emit(SupaResult.Success(Unit))
-            }catch (e: Exception){
+            }
+            catch (e: Exception) {
                 emit(SupaResult.Error(e.message))
             }
-
         }
+    }
 
+    fun createTask(task: TaskCreationViewModel.Task): Flow<SupaResult<Unit>> {
+        return flow{
+            emit(SupaResult.Loading)
+            try {
+                /*TODO: Add task to database*/
+            }
+            catch (e: Exception) {
+                emit(SupaResult.Error(e.message))
+            }
+        }
     }
 }
 
