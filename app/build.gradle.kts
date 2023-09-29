@@ -69,6 +69,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.navigation:navigation-runtime-ktx:2.7.3")
     implementation ("androidx.navigation:navigation-compose:2.7.3")
+    implementation("androidx.glance:glance:1.0.0")
     testImplementation("junit:junit:4.13.2")
 
     implementation("io.github.jan-tennert.supabase:postgrest-kt:1.3.2")

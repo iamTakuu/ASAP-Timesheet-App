@@ -30,4 +30,8 @@
 
     <string name="statistics">Statistics</string>
     <string name="invalid_login">Invalid Login.</string>
+
+    <string name="unbookmark">unbookmark</string>
+    <string name="bookmark">bookmark</string>
+    <string name="home_task_creation_time">29/09/2023 : 14:53</string>
 </resources>

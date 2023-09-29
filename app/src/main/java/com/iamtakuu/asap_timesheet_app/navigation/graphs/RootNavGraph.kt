@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.iamtakuu.asap_timesheet_app.screens.HomeScreen
+import com.iamtakuu.asap_timesheet_app.screens.TaskHomeScreen
 
 
 @Composable
@@ -18,7 +18,7 @@ fun RootNavigationGraph(navController: NavHostController){
     ){
         authNavGraph(navController = navController)
         composable(route = Graph.HOME){
-            HomeScreen()
+            TaskHomeScreen()
         }
     }
 }
