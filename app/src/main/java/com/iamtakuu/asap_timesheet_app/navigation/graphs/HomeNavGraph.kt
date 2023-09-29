@@ -31,8 +31,3 @@ fun HomeNavGraph(navController: NavHostController) {
 
     }
 }
-//        composable(route = BottomBarScreen.Categories.route) {
-//            ScreenContent(
-//                name = BottomBarScreen.Categories.route,
-//                onClick = { }
-//            )

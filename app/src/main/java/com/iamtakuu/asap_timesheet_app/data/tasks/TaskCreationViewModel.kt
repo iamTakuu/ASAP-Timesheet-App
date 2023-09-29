@@ -6,7 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.iamtakuu.asap_timesheet_app.data.rules.Validator
 import com.iamtakuu.asap_timesheet_app.data.user.SupaResult
-import com.iamtakuu.asap_timesheet_app.repository.impl.AuthRepositoryImp
+import com.iamtakuu.asap_timesheet_app.repository.AuthenticationRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -14,8 +15,9 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import javax.inject.Inject
 
+@HiltViewModel
 class TaskCreationViewModel @Inject constructor(
-    private val repository: AuthRepositoryImp
+    private val repository: AuthenticationRepository
 ): ViewModel(){
     private val TAG = TaskCreationViewModel::class.simpleName
 

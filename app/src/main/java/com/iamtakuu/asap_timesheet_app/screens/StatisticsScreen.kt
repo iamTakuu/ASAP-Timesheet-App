@@ -18,7 +18,7 @@ import com.iamtakuu.asap_timesheet_app.components.HeadingTextComponent
 import com.iamtakuu.asap_timesheet_app.data.statistics.PieChart
 
 @Composable
-fun StatisticsScreen(modifier: Modifier = Modifier) {
+fun StatisticsScreen() {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         content = {
