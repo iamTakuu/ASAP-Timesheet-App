@@ -402,12 +402,14 @@ fun ButtonComponent(value: String,
             .background(
                 brush = Brush.horizontalGradient(listOf(Secondary, Primary)),
                 shape = RoundedCornerShape(50.dp)
-            )
-            , contentAlignment = Alignment.Center
+            ),
+            contentAlignment = Alignment.Center
         ){
-            Text(text = value,
+            Text(
+                text = value,
                 fontSize = 18.sp,
-                fontWeight = FontWeight.Bold)
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }

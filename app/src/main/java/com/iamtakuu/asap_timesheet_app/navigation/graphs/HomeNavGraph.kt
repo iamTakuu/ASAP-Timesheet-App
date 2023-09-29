@@ -2,7 +2,6 @@ package com.iamtakuu.asap_timesheet_app.navigation.graphs
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -10,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.iamtakuu.asap_timesheet_app.screens.BottomBarScreen
+import com.iamtakuu.asap_timesheet_app.screens.CategoriesScreen
 import com.iamtakuu.asap_timesheet_app.screens.StatisticsScreen
 import com.iamtakuu.asap_timesheet_app.screens.TaskCardSimple
 import com.iamtakuu.asap_timesheet_app.screens.TaskCreationScreen
@@ -36,7 +36,7 @@ fun HomeNavGraph(navController: NavHostController) {
             StatisticsScreen()
         }
         composable(route = BottomBarScreen.Categories.route) {
-            Text(text = "Categories")
+            CategoriesScreen()
         }
         composable(route = BottomBarScreen.Task.route) {
             TaskCreationScreen()
