@@ -65,7 +65,7 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material:material-icons-extended:1.5.1")
+    implementation("androidx.compose.material:material-icons-extended:1.5.2")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.navigation:navigation-runtime-ktx:2.7.3")
     implementation ("androidx.navigation:navigation-compose:2.7.3")
@@ -86,7 +86,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
-    implementation("com.google.dagger:hilt-android:2.44")
+    implementation("com.google.dagger:hilt-android:2.44.2")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
