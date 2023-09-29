@@ -51,12 +51,6 @@ class SignUpViewModel @Inject constructor(
                     privacyPolicyAccepted = event.status
                 )
             }
-            is SignUpUIEvent.RegisterButtonClicked -> {
-                if (allValidationsPassed.value){
-                    registerUser()
-                    observeSignUpState()
-                }
-            }
         }
         validateDataWithRules()
     }
@@ -98,7 +92,7 @@ class SignUpViewModel @Inject constructor(
             }
         }
     }
-private fun observeSignUpState(){
+private fun observeSignUpState(onSignUpClick: () -> Unit) {
     viewModelScope.launch {
         uiState.collectLatest { data ->
             when(data){
@@ -115,7 +109,8 @@ private fun observeSignUpState(){
                 }
                 is SupaResult.Success -> {
                     Log.e("SignUpVM", "Epic ${data.data}")
-                    ApplicationRouter.navigateTo(Screen.TaskCreationScreen)
+                    //ApplicationRouter.navigateTo(Screen.TaskCreationScreen)
+                    onSignUpClick()
                 }
             }
         }
@@ -125,5 +120,13 @@ private fun observeSignUpState(){
     private fun printState() {
         Log.d(TAG, "Inside_printState")
         Log.d(TAG, signUpUIState.value.toString())
+    }
+
+    fun attemptSignUp(onSignUpClick: () -> Unit) {
+        validateDataWithRules()
+        if (allValidationsPassed.value){
+            registerUser()
+            observeSignUpState(onSignUpClick)
+        }
     }
 }

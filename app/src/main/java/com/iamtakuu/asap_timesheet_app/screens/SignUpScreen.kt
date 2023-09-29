@@ -17,9 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.iamtakuu.asap_timesheet_app.R
 import com.iamtakuu.asap_timesheet_app.components.ButtonComponent
 import com.iamtakuu.asap_timesheet_app.components.CheckboxComponent
@@ -33,12 +32,14 @@ import com.iamtakuu.asap_timesheet_app.components.PasswordFieldComponent
 import com.iamtakuu.asap_timesheet_app.components.TextFieldComponent
 import com.iamtakuu.asap_timesheet_app.data.signup.SignUpUIEvent
 import com.iamtakuu.asap_timesheet_app.data.signup.SignUpViewModel
-import com.iamtakuu.asap_timesheet_app.navigation.ApplicationRouter
-import com.iamtakuu.asap_timesheet_app.navigation.Screen
 
 
 @Composable
-fun SignUpScreen(signupViewModel: SignUpViewModel = viewModel()) {
+fun SignUpScreen(
+    viewModel: SignUpViewModel = hiltViewModel(),
+    onSignUpClick: () -> Unit,
+    onLoginClick: () -> Unit
+) {
         Surface (
             modifier = Modifier
                 .fillMaxSize()
@@ -55,24 +56,24 @@ fun SignUpScreen(signupViewModel: SignUpViewModel = viewModel()) {
                     labelValue = stringResource(id = R.string.email),
                     painterResource(id = R.drawable.message),
                     onTextSelected = {
-                        signupViewModel.onEvent(SignUpUIEvent.EmailChanged(it))
+                        viewModel.onEvent(SignUpUIEvent.EmailChanged(it))
                     },
-                    errorStatus = signupViewModel.signUpUIState.value.emailError
+                    errorStatus = viewModel.signUpUIState.value.emailError
                 )
                 PasswordFieldComponent(
                     labelValue = stringResource(id = R.string.password),
                     painterResource(id = R.drawable.ic_lock),
                     onTextSelected = {
-                        signupViewModel.onEvent(SignUpUIEvent.PasswordChanged(it))
+                        viewModel.onEvent(SignUpUIEvent.PasswordChanged(it))
                     },
-                    errorStatus = signupViewModel.signUpUIState.value.passwordError
+                    errorStatus = viewModel.signUpUIState.value.passwordError
                 )
                 CheckboxComponent(
                     onTextSelected = {
-                    ApplicationRouter.navigateTo(Screen.TermsAndConditionsScreen)
+                    //onLoginClick // TODO: NAVIGATETOTS AND CS
                 },
                     onCheckedChange = {
-                        signupViewModel.onEvent(SignUpUIEvent.PrivacyPolicyCheckBoxClicked(it))
+                        viewModel.onEvent(SignUpUIEvent.PrivacyPolicyCheckBoxClicked(it))
 
                     }
                 )
@@ -81,9 +82,10 @@ fun SignUpScreen(signupViewModel: SignUpViewModel = viewModel()) {
                 ButtonComponent(
                     value = stringResource(id = R.string.register),
                     onButtonClicked = {
-                        signupViewModel.onEvent(SignUpUIEvent.RegisterButtonClicked)
+                        //signupViewModel.onEvent(SignUpUIEvent.RegisterButtonClicked)
+                        viewModel.attemptSignUp(onSignUpClick)
                     },
-                    isEnabled = signupViewModel.allValidationsPassed.value)
+                    isEnabled = viewModel.allValidationsPassed.value)
 
                 Spacer(modifier = Modifier.height(5.dp))
 
@@ -98,10 +100,10 @@ fun SignUpScreen(signupViewModel: SignUpViewModel = viewModel()) {
                 Spacer(modifier = Modifier.height(5.dp))
 
                 ClickableLoginComponent(tryingToLogin = true, onTextSelected = {
-                    ApplicationRouter.navigateTo(Screen.LoginScreen)
+                    onLoginClick()
                 })
 
-                if(signupViewModel.signUpInProgress.value) {
+                if(viewModel.signUpInProgress.value) {
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
@@ -110,8 +112,11 @@ fun SignUpScreen(signupViewModel: SignUpViewModel = viewModel()) {
         }
 }
 
-@Preview
-@Composable
-fun SignUpScreenPreview(){
-    SignUpScreen()
-}
+//@Preview
+//@Composable
+//fun SignUpScreenPreview(){
+//    SignUpScreen {
+//        navController.popBackStack()
+//        navController.navigate(com.iamtakuu.asap_timesheet_app.navigation.graphs.Graph.HOME)
+//    }
+//}

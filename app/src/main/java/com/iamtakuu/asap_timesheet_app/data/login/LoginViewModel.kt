@@ -6,8 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.iamtakuu.asap_timesheet_app.data.rules.Validator
 import com.iamtakuu.asap_timesheet_app.data.user.SupaResult
-import com.iamtakuu.asap_timesheet_app.navigation.ApplicationRouter
-import com.iamtakuu.asap_timesheet_app.navigation.Screen
 import com.iamtakuu.asap_timesheet_app.repository.impl.AuthRepositoryImp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,15 +48,17 @@ class LoginViewModel @Inject constructor(
                 )
             }
 
-            is LoginUIEvent.LoginButtonClicked -> {
-                if (allValidationsPassed.value){
-                    login()
-                    observeLoginState()
-                }
-            }
+            else -> {}
         }
-
         validateLoginUIDataWithRules()
+    }
+
+    fun attemptLogin(onLoginClick: () -> Unit){
+        validateLoginUIDataWithRules()
+        if (allValidationsPassed.value){
+            login()
+            observeLoginState(onLoginClick)
+        }
     }
 
     private fun validateLoginUIDataWithRules() {
@@ -88,7 +88,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun observeLoginState(){
+    private fun observeLoginState(onLoginClick: () -> Unit) {
         viewModelScope.launch {
             uiState.collectLatest { data ->
                 when(data){
@@ -104,8 +104,10 @@ class LoginViewModel @Inject constructor(
                     }
                     is SupaResult.Success -> {
                         Log.e("SignUpVM", "Epic ${data.data}")
-                        ApplicationRouter.navigateTo(Screen.TaskCreationScreen)
+                        onLoginClick()
                     }
+
+                    else -> {}
                 }
             }
 
