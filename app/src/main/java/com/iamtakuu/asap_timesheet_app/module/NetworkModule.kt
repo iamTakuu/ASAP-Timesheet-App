@@ -5,7 +5,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.annotations.SupabaseExperimental
 import io.github.jan.supabase.createSupabaseClient
+import io.github.jan.supabase.gotrue.FlowType
 import io.github.jan.supabase.gotrue.GoTrue
 import io.github.jan.supabase.gotrue.gotrue
 import io.github.jan.supabase.postgrest.Postgrest
@@ -20,6 +22,8 @@ const val SUPABASEKEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
+
+    @OptIn(SupabaseExperimental::class)
     @Provides
     @Singleton
     fun provideSupabaseClient(): SupabaseClient{
@@ -31,7 +35,11 @@ object NetworkModule {
                 ignoreUnknownKeys = true
             })
             this.install(Postgrest)
-            this.install(GoTrue)
+            this.install(GoTrue){
+                flowType = FlowType.PKCE
+                scheme = "app"
+                host = "supabase.com"
+            }
         }
     }
     @Provides
