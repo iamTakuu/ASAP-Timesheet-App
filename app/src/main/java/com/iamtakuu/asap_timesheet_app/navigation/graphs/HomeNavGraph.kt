@@ -10,7 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.iamtakuu.asap_timesheet_app.screens.BottomBarScreen
 import com.iamtakuu.asap_timesheet_app.screens.CategoriesScreen
-import com.iamtakuu.asap_timesheet_app.screens.StatisticsScreen
+import com.iamtakuu.asap_timesheet_app.screens.StatsAchievements
 import com.iamtakuu.asap_timesheet_app.screens.TaskCardSimple
 import com.iamtakuu.asap_timesheet_app.screens.TaskCreationScreen
 import com.iamtakuu.asap_timesheet_app.screens.task3
@@ -33,7 +33,7 @@ fun HomeNavGraph(navController: NavHostController) {
             }
         }
         composable(route = BottomBarScreen.Stats.route) {
-            StatisticsScreen()
+            StatsAchievements()
         }
         composable(route = BottomBarScreen.Categories.route) {
             CategoriesScreen()

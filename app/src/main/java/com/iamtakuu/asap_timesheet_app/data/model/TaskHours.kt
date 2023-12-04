@@ -1,7 +1,7 @@
 package com.iamtakuu.asap_timesheet_app.data.model
 
-data class Achievement(
-    val id: String,
+data class TaskHours (
+    val id: String?,
     val name: String,
-    val painterID: String
+    val hours: Int
 )
